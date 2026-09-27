@@ -12,26 +12,23 @@ export default function App() {
   // Estados dos módulos
   const [insumos, setInsumos] = useState([
     { id: 1, nome: 'Leite Moça (Nestlé)', estoque: 18, unidade: 'un', custo: 8.50, min: 5 },
-    { id: 2, nome: 'Chocolate Belga 50%', estoque: 3.5, unidade: 'kg', custo: 65.00, min: 2 },
-    { id: 3, nome: 'Manteiga com Sal', estoque: 10, unidade: 'un', custo: 10.00, min: 4 }
+    { id: 2, nome: 'Chocolate Belga 50%', estoque: 3.5, unidade: 'kg', custo: 65.00, min: 2 }
   ]);
 
   const [fornecedores, setFornecedores] = useState([
-    { id: 1, nome: 'Atacadão Itapevi', contato: '(11) 4002-8922', categoria: 'Embalagens e Leite Condensado' },
-    { id: 2, nome: 'Loja de Confeitaria Doce Mel', contato: '(11) 97777-6666', categoria: 'Chocolates e Moldes' }
+    { id: 1, nome: 'Atacadão Itapevi', contato: '(11) 4002-8922', categoria: 'Embalagens' }
   ]);
 
   const [produtos, setProdutos] = useState([
-    { id: 1, nome: 'Bolo no Pote de Ninho com Morango', preco: 15.00, categoria: 'Bolos no Pote' },
-    { id: 2, nome: 'Brigadeiro Gourmet Belga (Caixa c/ 4)', preco: 18.00, categoria: 'Brigadeiros' }
+    { id: 1, nome: 'Bolo no Pote de Ninho', preco: 15.00, categoria: 'Bolos no Pote' }
   ]);
 
   const [clientes, setClientes] = useState([
     { id: 1, nome: 'Mariana Silva', telefone: '(11) 98888-7777', cidade: 'Itapevi/SP' }
   ]);
 
-  // Estados dos formulários
-  const [novoInsumo, setNovoInsumo] = useState({ nome: '', estoque: '', unidade: 'un', custo: '', min: 5 });
+  // Estados dos formulários individuais
+  const [novoInsumo, setNovoInsumo] = useState({ nome: '', estoque: '', unidade: 'un', custo: '' });
   const [novoFornecedor, setNovoFornecedor] = useState({ nome: '', contato: '', categoria: '' });
   const [novoProduto, setNovoProduto] = useState({ nome: '', preco: '', categoria: 'Bolos no Pote' });
   const [novoCliente, setNovoCliente] = useState({ nome: '', telefone: '', cidade: 'Itapevi/SP' });
@@ -40,7 +37,7 @@ export default function App() {
     e.preventDefault();
     if (!novoInsumo.nome || !novoInsumo.estoque || !novoInsumo.custo) return;
     setInsumos([...insumos, { id: Date.now(), ...novoInsumo, estoque: Number(novoInsumo.estoque), custo: Number(novoInsumo.custo) }]);
-    setNovoInsumo({ nome: '', estoque: '', unidade: 'un', custo: '', min: 5 });
+    setNovoInsumo({ nome: '', estoque: '', unidade: 'un', custo: '' });
   };
 
   const adicionarFornecedor = (e) => {
@@ -71,7 +68,6 @@ export default function App() {
     { id: 'produtos', label: '10. Produtos', icon: Sparkles },
     { id: 'clientes', label: '14. Clientes', icon: Users },
     { id: 'vendas', label: '15. Vendas', icon: ShoppingCart },
-    { id: 'lotes', label: '5. Lotes (PVPS/FEFO)', icon: Layers },
   ];
 
   return (
@@ -150,38 +146,46 @@ export default function App() {
                 Painel Ativo
               </span>
               <h2 className="text-xl font-bold mt-3 text-amber-100">Akali Confeitaria Artesanal</h2>
-              <p className="text-xs text-amber-200/80 mt-1">Gestão integrada de insumos, fornecedores, produtos e clientes.</p>
+              <p className="text-xs text-amber-200/80 mt-1">Gestão completa de insumos, fornecedores, produtos e clientes.</p>
               
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5">
-                <button onClick={() => setActiveTab('fornecedores')} className="bg-amber-600 hover:bg-amber-700 text-white text-xs py-2.5 px-4 rounded-xl font-semibold shadow">
-                  Gerir Fornecedores
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 mt-5">
+                <button onClick={() => setActiveTab('insumos')} className="bg-amber-600 hover:bg-amber-700 text-white text-xs py-2.5 px-3 rounded-xl font-semibold shadow">
+                  Insumos
                 </button>
-                <button onClick={() => setActiveTab('produtos')} className="bg-stone-800 text-amber-100 text-xs py-2.5 px-4 rounded-xl font-semibold border border-amber-900/50">
-                  Ver Produtos
+                <button onClick={() => setActiveTab('fornecedores')} className="bg-stone-800 text-amber-100 text-xs py-2.5 px-3 rounded-xl font-semibold border border-amber-900/50">
+                  Fornecedores
                 </button>
-                <button onClick={() => setActiveTab('insumos')} className="bg-stone-800 text-amber-100 text-xs py-2.5 px-4 rounded-xl font-semibold border border-amber-900/50">
-                  Gerir Insumos
+                <button onClick={() => setActiveTab('produtos')} className="bg-stone-800 text-amber-100 text-xs py-2.5 px-3 rounded-xl font-semibold border border-amber-900/50">
+                  Produtos
+                </button>
+                <button onClick={() => setActiveTab('clientes')} className="bg-stone-800 text-amber-100 text-xs py-2.5 px-3 rounded-xl font-semibold border border-amber-900/50">
+                  Clientes
                 </button>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+              <div className="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm">
+                <p className="text-[11px] font-bold text-stone-400 uppercase">Insumos</p>
+                <p className="text-xl font-bold text-stone-900 mt-1">{insumos.length} Itens</p>
+              </div>
+              <div className="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm">
                 <p className="text-[11px] font-bold text-stone-400 uppercase">Fornecedores</p>
-                <p className="text-2xl font-bold text-stone-900 mt-1">{fornecedores.length} Cadastrados</p>
+                <p className="text-xl font-bold text-stone-900 mt-1">{fornecedores.length} Cadastrados</p>
               </div>
-              <div className="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm">
+              <div className="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm">
                 <p className="text-[11px] font-bold text-stone-400 uppercase">Produtos</p>
-                <p className="text-2xl font-bold text-stone-900 mt-1">{produtos.length} Itens</p>
+                <p className="text-xl font-bold text-stone-900 mt-1">{produtos.length} Itens</p>
               </div>
-              <div className="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm">
+              <div className="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm">
                 <p className="text-[11px] font-bold text-stone-400 uppercase">Clientes</p>
-                <p className="text-2xl font-bold text-stone-900 mt-1">{clientes.length} Cadastrados</p>
+                <p className="text-xl font-bold text-stone-900 mt-1">{clientes.length} Cadastrados</p>
               </div>
             </div>
           </div>
         )}
 
+        {/* INSUMOS */}
         {activeTab === 'insumos' && (
           <div className="space-y-6">
             <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
@@ -190,7 +194,7 @@ export default function App() {
                 <input type="text" placeholder="Nome" value={novoInsumo.nome} onChange={e => setNovoInsumo({...novoInsumo, nome: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
                 <input type="number" placeholder="Estoque" value={novoInsumo.estoque} onChange={e => setNovoInsumo({...novoInsumo, estoque: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
                 <input type="number" placeholder="Custo (R$)" value={novoInsumo.custo} onChange={e => setNovoInsumo({...novoInsumo, custo: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <button type="submit" className="bg-amber-700 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar Insumo</button>
+                <button type="submit" className="bg-amber-700 hover:bg-amber-800 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar Insumo</button>
               </form>
             </div>
             <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
@@ -208,17 +212,16 @@ export default function App() {
           </div>
         )}
 
+        {/* FORNECEDORES */}
         {activeTab === 'fornecedores' && (
           <div className="space-y-6">
             <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
-              <h2 className="text-base font-bold text-stone-900 mb-4 flex items-center gap-2">
-                <Truck className="w-5 h-5 text-amber-700" /> Cadastrar Fornecedor
-              </h2>
+              <h2 className="text-base font-bold text-stone-900 mb-4">Cadastrar Fornecedor</h2>
               <form onSubmit={adicionarFornecedor} className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                <input type="text" placeholder="Nome do Fornecedor / Loja" value={novoFornecedor.nome} onChange={e => setNovoFornecedor({...novoFornecedor, nome: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
+                <input type="text" placeholder="Nome do Fornecedor" value={novoFornecedor.nome} onChange={e => setNovoFornecedor({...novoFornecedor, nome: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
                 <input type="text" placeholder="Contato / Telefone" value={novoFornecedor.contato} onChange={e => setNovoFornecedor({...novoFornecedor, contato: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <input type="text" placeholder="Categoria (ex: Embalagens)" value={novoFornecedor.categoria} onChange={e => setNovoFornecedor({...novoFornecedor, categoria: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <button type="submit" className="bg-amber-700 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar Fornecedor</button>
+                <input type="text" placeholder="Categoria" value={novoFornecedor.categoria} onChange={e => setNovoFornecedor({...novoFornecedor, categoria: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
+                <button type="submit" className="bg-amber-700 hover:bg-amber-800 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar Fornecedor</button>
               </form>
             </div>
             <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
@@ -236,6 +239,7 @@ export default function App() {
           </div>
         )}
 
+        {/* PRODUTOS */}
         {activeTab === 'produtos' && (
           <div className="space-y-6">
             <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
@@ -243,7 +247,7 @@ export default function App() {
               <form onSubmit={adicionarProduto} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <input type="text" placeholder="Nome do Produto" value={novoProduto.nome} onChange={e => setNovoProduto({...novoProduto, nome: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
                 <input type="number" placeholder="Preço (R$)" value={novoProduto.preco} onChange={e => setNovoProduto({...novoProduto, preco: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <button type="submit" className="bg-amber-700 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar Produto</button>
+                <button type="submit" className="bg-amber-700 hover:bg-amber-800 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar Produto</button>
               </form>
             </div>
             <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
@@ -261,14 +265,15 @@ export default function App() {
           </div>
         )}
 
+        {/* CLIENTES */}
         {activeTab === 'clientes' && (
           <div className="space-y-6">
             <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
               <h2 className="text-base font-bold text-stone-900 mb-4">Cadastrar Cliente</h2>
               <form onSubmit={adicionarCliente} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <input type="text" placeholder="Nome" value={novoCliente.nome} onChange={e => setNovoCliente({...novoCliente, nome: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <input type="text" placeholder="Telefone" value={novoCliente.telefone} onChange={e => setNovoCliente({...novoCliente, telefone: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <button type="submit" className="bg-amber-700 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar Cliente</button>
+                <input type="text" placeholder="Nome do Cliente" value={novoCliente.nome} onChange={e => setNovoCliente({...novoCliente, nome: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
+                <input type="text" placeholder="Telefone / WhatsApp" value={novoCliente.telefone} onChange={e => setNovoCliente({...novoCliente, telefone: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
+                <button type="submit" className="bg-amber-700 hover:bg-amber-800 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar Cliente</button>
               </form>
             </div>
             <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
@@ -293,17 +298,10 @@ export default function App() {
           </div>
         )}
 
-        {activeTab !== 'dashboard' && activeTab !== 'insumos' && activeTab !== 'fornecedores' && activeTab !== 'produtos' && activeTab !== 'clientes' && activeTab !== 'vendas' && (
-          <div className="bg-white rounded-2xl border border-stone-200 p-8 text-center shadow-sm space-y-3">
-            <h2 className="text-base font-bold text-stone-900 capitalize">Módulo: {activeTab}</h2>
-            <button onClick={() => setActiveTab('dashboard')} className="mt-2 bg-[#2D1810] text-amber-100 px-4 py-2 rounded-xl text-xs font-semibold">Voltar ao Dashboard</button>
-          </div>
-        )}
-
       </main>
 
       <footer className="bg-white border-t border-stone-200 py-4 text-center text-xs text-stone-500 mt-auto">
-        Akali Confeitaria Artesanal • Sistema de Gestão
+        Akali Confeitaria Artesanal • Sistema Completo de Gestão
       </footer>
     </div>
   );
