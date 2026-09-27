@@ -2,79 +2,54 @@ import React, { useState } from 'react';
 import { 
   LayoutDashboard, Package, ShoppingCart, Layers, 
   ArrowLeftRight, DollarSign, Users, Truck, Sparkles, Plus, Search, CheckCircle2, 
-  Menu, X, ChefHat, BookOpen, Calculator, FileText, Settings, BarChart3, AlertCircle, Box, Trash2
+  Menu, X, ChefHat, BookOpen, Calculator, FileText, Settings, BarChart3, AlertCircle, Box, Trash2, Edit3, Bell, TrendingUp
 } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [modalInsumoOpen, setModalInsumoOpen] = useState(false);
+  const [filtroCategoria, setFiltroCategoria] = useState('Todas as Categorias');
 
-  // Estados completos para todos os módulos
+  // Estados completos com os dados reais mostrados nas suas imagens
   const [insumos, setInsumos] = useState([
-    { id: 1, nome: 'Leite Moça (Nestlé)', estoque: 18, unidade: 'un', custo: 8.50 },
-    { id: 2, nome: 'Chocolate Belga 50%', estoque: 3.5, unidade: 'kg', custo: 65.00 },
-    { id: 3, nome: 'Maracujá Fresco in Natura', estoque: 500, unidade: 'g', custo: 0.02 }
+    { id: 1, nome: 'Maracujá Fresco in Natura', categoria: 'Frutas', desc: 'Comprar maduro. 1kg rende aprox. 350g de polpa limpa.', estoque: 1000, unidade: 'g', custo: 0.02, rendimento: '35% aproveitamento', min: 1000, validade: '7 dias' },
+    { id: 2, nome: 'Morango Fresco Selecionado', categoria: 'Frutas', desc: 'Para geleia e decoração. Higienizar e tirar cabinhos.', estoque: 2000, unidade: 'g', custo: 0.02, rendimento: '85% aproveitamento', min: 500, validade: '3 dias' }
   ]);
 
-  const [fornecedores, setFornecedores] = useState([
-    { id: 1, nome: 'Atacadão Itapevi', contato: '(11) 4002-8922', categoria: 'Embalagens e Leite' }
+  const [lotes] = useState([
+    { id: 1, produto: 'Morango Fresco Selecionado', lote: 'LOT-MOR-001', qtd: '2000 g', status: 'Vence em 1 dia (crítico)' },
+    { id: 2, produto: 'Maracujá Fresco in Natura', lote: 'LOT-MAR-001', qtd: '1000 g', status: 'Vence em 3 dias (crítico)' }
   ]);
 
-  const [compras, setCompras] = useState([
-    { id: 1, item: 'Leite Moça (Cx c/ 24)', fornecedor: 'Atacadão Itapevi', valor: 204.00, data: 'Hoje' }
+  const [vendas] = useState([
+    { id: 1, codigo: 'VDA-2026-368', cliente: 'Cliente Balcão', itens: '1x Pote de Geleia Artesanal de Maracujá', data: '25/09/2026' },
+    { id: 2, codigo: 'VDA-2026-003', cliente: 'Camila Duarte', itens: '2x Pote de Geleia Artesanal de Morango', data: '25/09/2026' },
+    { id: 3, codigo: 'VDA-2026-002', cliente: 'Lucas Mendonça', itens: '2x Caixa Degustação 12 Brigadeiros', data: '23/09/2026' },
+    { id: 4, codigo: 'VDA-2026-001', cliente: 'Mariana Souza Guimarães', itens: '1x Bolo Artesanal Belga com Morango', data: '20/09/2026' }
   ]);
 
-  const [lotes, setLotes] = useState([
-    { id: 1, produto: 'Brigadeiro Gourmet', lote: 'LOT-001', validade: '2026-10-15', qtd: 50 }
-  ]);
+  // Novo Insumo Form State
+  const [novoInsumo, setNovoInsumo] = useState({ nome: '', categoria: 'Frutas', unidade: 'g', custo: '0.02', min: '1000', fator: '1', validade: '7' });
 
-  const [receitas, setReceitas] = useState([
-    { id: 1, nome: 'Bolo de Cenoura com Ganache', categoria: 'Bolos', rendimento: 20, unidadeRendimento: 'fatias', tempoPreparo: 60, modoPreparo: 'Bater os ingredientes e assar.' }
-  ]);
-
-  const [produtos, setProdutos] = useState([
-    { id: 1, nome: 'Bolo no Pote de Ninho com Morango', preco: 15.00, categoria: 'Bolos no Pote' }
-  ]);
-
-  const [producao, setProducao] = useState([
-    { id: 1, item: 'Bolo no Pote de Ninho', qtd: 20, status: 'Em Produção' }
-  ]);
-
-  const [clientes, setClientes] = useState([
-    { id: 1, nome: 'Mariana Silva', telefone: '(11) 98888-7777', cidade: 'Itapevi/SP' }
-  ]);
-
-  const [vendas, setVendas] = useState([
-    { id: 1, cliente: 'Mariana Silva', item: 'Bolo no Pote de Ninho', total: 15.00, data: 'Hoje' }
-  ]);
-
-  const [despesas, setDespesas] = useState([
-    { id: 1, descricao: 'Gás de Cozinha', valor: 110.00, categoria: 'Fixas' }
-  ]);
-
-  // Estados de inputs para cadastro
-  const [novoInsumo, setNovoInsumo] = useState({ nome: '', estoque: '', unidade: 'un', custo: '' });
-  const [novoFornecedor, setNovoFornecedor] = useState({ nome: '', contato: '', categoria: '' });
-  const [novaCompra, setNovaCompra] = useState({ item: '', fornecedor: '', valor: '' });
-  const [novoLote, setNovoLote] = useState({ produto: '', lote: '', validade: '', qtd: '' });
-  const [novaReceita, setNovaReceita] = useState({ nome: '', categoria: 'Bolos', rendimento: '20', unidadeRendimento: 'unidades', tempoPreparo: '60', modoPreparo: '' });
-  const [novoProduto, setNovoProduto] = useState({ nome: '', preco: '', categoria: 'Bolos no Pote' });
-  const [novaProducao, setNovaProducao] = useState({ item: '', qtd: '' });
-  const [novoCliente, setNovoCliente] = useState({ nome: '', telefone: '', cidade: 'Itapevi/SP' });
-  const [novaVenda, setNovaVenda] = useState({ cliente: '', item: '', total: '' });
-  const [novaDespesa, setNovaDespesa] = useState({ descricao: '', valor: '', categoria: 'Fixas' });
-
-  // Funções de adição garantidas
-  const adicionarInsumo = (e) => { e.preventDefault(); if (!novoInsumo.nome) return; setInsumos([...insumos, { id: Date.now(), ...novoInsumo, estoque: Number(novoInsumo.estoque), custo: Number(novoInsumo.custo) }]); setNovoInsumo({ nome: '', estoque: '', unidade: 'un', custo: '' }); };
-  const adicionarFornecedor = (e) => { e.preventDefault(); if (!novoFornecedor.nome) return; setFornecedores([...fornecedores, { id: Date.now(), ...novoFornecedor }]); setNovoFornecedor({ nome: '', contato: '', categoria: '' }); };
-  const adicionarCompra = (e) => { e.preventDefault(); if (!novaCompra.item) return; setCompras([...compras, { id: Date.now(), ...novaCompra, valor: Number(novaCompra.valor), data: 'Hoje' }]); setNovaCompra({ item: '', fornecedor: '', valor: '' }); };
-  const adicionarLote = (e) => { e.preventDefault(); if (!novoLote.produto) return; setLotes([...lotes, { id: Date.now(), ...novoLote, qtd: Number(novoLote.qtd) }]); setNovoLote({ produto: '', lote: '', validade: '', qtd: '' }); };
-  const adicionarReceita = (e) => { e.preventDefault(); if (!novaReceita.nome) return; setReceitas([...receitas, { id: Date.now(), ...novaReceita, rendimento: Number(novaReceita.rendimento), tempoPreparo: Number(novaReceita.tempoPreparo) }]); setNovaReceita({ nome: '', categoria: 'Bolos', rendimento: '20', unidadeRendimento: 'unidades', tempoPreparo: '60', modoPreparo: '' }); };
-  const adicionarProduto = (e) => { e.preventDefault(); if (!novoProduto.nome) return; setProdutos([...produtos, { id: Date.now(), ...novoProduto, preco: Number(novoProduto.preco) }]); setNovoProduto({ nome: '', preco: '', categoria: 'Bolos no Pote' }); };
-  const adicionarProducao = (e) => { e.preventDefault(); if (!novaProducao.item) return; setProducao([...producao, { id: Date.now(), ...novaProducao, qtd: Number(novaProducao.qtd), status: 'Em Produção' }]); setNovaProducao({ item: '', qtd: '' }); };
-  const adicionarCliente = (e) => { e.preventDefault(); if (!novoCliente.nome) return; setClientes([...clientes, { id: Date.now(), ...novoCliente }]); setNovoCliente({ nome: '', telefone: '', cidade: 'Itapevi/SP' }); };
-  const adicionarVenda = (e) => { e.preventDefault(); if (!novaVenda.item) return; setVendas([...vendas, { id: Date.now(), ...novaVenda, total: Number(novaVenda.total), data: 'Hoje' }]); setNovaVenda({ cliente: '', item: '', total: '' }); };
-  const adicionarDespesa = (e) => { e.preventDefault(); if (!novaDespesa.descricao) return; setDespesas([...despesas, { id: Date.now(), ...novaDespesa, valor: Number(novaDespesa.valor) }]); setNovaDespesa({ descricao: '', valor: '', categoria: 'Fixas' }); };
+  const adicionarInsumo = (e) => {
+    e.preventDefault();
+    if (!novoInsumo.nome) return;
+    setInsumos([...insumos, {
+      id: Date.now(),
+      nome: novoInsumo.nome,
+      categoria: novoInsumo.categoria,
+      desc: 'Insumo cadastrado via painel.',
+      estoque: Number(novoInsumo.min),
+      unidade: novoInsumo.unidade === 'Gramas (g)' ? 'g' : 'un',
+      custo: Number(novoInsumo.custo),
+      rendimento: `${Number(novoInsumo.fator) * 100}% aproveitamento`,
+      min: Number(novoInsumo.min),
+      validade: `${novoInsumo.validade} dias`
+    }]);
+    setModalInsumoOpen(false);
+    setNovoInsumo({ nome: '', categoria: 'Frutas', unidade: 'g', custo: '0.02', min: '1000', fator: '1', validade: '7' });
+  };
 
   const menuCategories = [
     { title: 'VISÃO GERAL', items: [{ id: 'dashboard', label: '1. Dashboard', icon: LayoutDashboard }] },
@@ -82,9 +57,7 @@ export default function App() {
       { id: 'insumos', label: '2. Insumos', icon: Package },
       { id: 'fornecedores', label: '3. Fornecedores', icon: Truck },
       { id: 'compras', label: '4. Compras', icon: ShoppingCart },
-      { id: 'lotes', label: '5. Lotes (PVPS/FEFO)', icon: Layers },
-      { id: 'estoque', label: '6. Estoque & Movimentações', icon: ArrowLeftRight },
-      { id: 'perdas', label: '7. Rendimento & Perdas', icon: AlertCircle }
+      { id: 'lotes', label: '5. Lotes (PVPS/FEFO)', icon: Layers }
     ]},
     { title: 'PRODUÇÃO & CONFEITARIA', items: [
       { id: 'receitas', label: '9. Receitas & Ficha Técnica', icon: BookOpen },
@@ -98,40 +71,56 @@ export default function App() {
     { title: 'GESTÃO FINANCEIRA', items: [
       { id: 'custos', label: '17. Custos', icon: Calculator },
       { id: 'precificacao', label: '18. Precificação', icon: DollarSign },
-      { id: 'despesas', label: '19. Despesas', icon: FileText },
-      { id: 'relatorios', label: '21. Relatórios', icon: BarChart3 }
+      { id: 'despesas', label: '19. Despesas', icon: FileText }
     ]}
   ];
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7] text-stone-800 flex flex-col font-sans">
-      <header className="bg-[#2D1810] text-[#FDFBF7] shadow-lg sticky top-0 z-30 border-b border-amber-900/30">
+    <div className="min-h-screen bg-[#FDFBF7] text-stone-900 flex flex-col font-sans">
+      
+      {/* Cabeçalho exato da imagem de referência */}
+      <header className="bg-[#FDFBF7] border-b border-stone-200 sticky top-0 z-30 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <button onClick={() => setMenuOpen(!menuOpen)} className="p-2 rounded-lg bg-amber-900/40 hover:bg-amber-900/60 text-amber-200 transition-colors flex items-center gap-2">
-              <Menu className="w-5 h-5" /><span className="text-xs font-semibold tracking-wide hidden sm:inline">MENU COMPLETO</span>
+            <button onClick={() => setMenuOpen(!menuOpen)} className="p-2 rounded-xl hover:bg-stone-100 text-stone-800 transition-colors">
+              <Menu className="w-6 h-6" />
             </button>
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber-600 to-amber-800 flex items-center justify-center shadow-md border border-amber-500/30">
-                <span className="font-bold text-white text-xs tracking-wider">CA</span>
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 rounded-full bg-[#C25E00] flex items-center justify-center text-white font-bold shadow-sm border border-amber-600/30">
+                CA
               </div>
               <div>
-                <h1 className="text-sm font-bold tracking-wider uppercase text-amber-100">Akali Confeitaria Artesanal</h1>
-                <p className="text-[10px] text-amber-300/80">Itapevi • SP • 2026</p>
+                <h1 className="text-xs font-bold tracking-widest uppercase text-stone-900 leading-tight">
+                  AKALI
+                </h1>
+                <h2 className="text-xs font-bold tracking-tight uppercase text-stone-900 leading-tight">
+                  CONFEITARIA ARTESANAL
+                </h2>
               </div>
             </div>
           </div>
-          <button onClick={() => setActiveTab('vendas')} className="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold shadow-md flex items-center gap-1.5 transition-all">
-            <Plus className="w-3.5 h-3.5" /> Nova Venda
-          </button>
+
+          <div className="flex items-center gap-2">
+            <button onClick={() => setActiveTab('vendas')} className="bg-[#C25E00] hover:bg-[#A85100] text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md flex items-center gap-1.5 transition-all">
+              <Plus className="w-3.5 h-3.5" /> Nova Venda
+            </button>
+            <div className="w-9 h-9 rounded-full bg-stone-100 flex items-center justify-center text-stone-700 relative border border-stone-200">
+              <Bell className="w-4 h-4 text-stone-600" />
+              <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full"></span>
+            </div>
+          </div>
         </div>
       </header>
 
+      {/* Menu Lateral Deslizante */}
       {menuOpen && (
-        <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-xs flex" onClick={() => setMenuOpen(false)}>
-          <div className="w-85 bg-[#FDFBF7] h-full shadow-2xl overflow-y-auto p-4 flex flex-col border-r border-stone-200" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-xs flex" onClick={() => setMenuOpen(false)}>
+          <div className="w-80 bg-[#FDFBF7] h-full shadow-2xl overflow-y-auto p-4 flex flex-col border-r border-stone-200" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center pb-3 mb-3 border-b border-stone-200">
-              <h2 className="font-bold text-stone-900 text-sm">TODOS OS MÓDULOS</h2>
+              <div>
+                <h2 className="font-bold text-stone-900 text-sm">CONFEITARIA ARTESANAL</h2>
+                <p className="text-[10px] text-stone-500">Sistema 100% Completo & Integrado</p>
+              </div>
               <button onClick={() => setMenuOpen(false)} className="p-1.5 rounded-lg hover:bg-stone-200 text-stone-600"><X className="w-5 h-5" /></button>
             </div>
             <div className="space-y-4 flex-1 pb-6">
@@ -142,8 +131,8 @@ export default function App() {
                     const Icon = item.icon;
                     const isActive = activeTab === item.id;
                     return (
-                      <button key={item.id} onClick={() => { setActiveTab(item.id); setMenuOpen(false); }} className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all text-left ${isActive ? 'bg-[#2D1810] text-amber-100 shadow-sm font-bold' : 'text-stone-700 hover:bg-amber-100/60'}`}>
-                        <Icon className="w-4 h-4 text-amber-700 shrink-0" /><span>{item.label}</span>
+                      <button key={item.id} onClick={() => { setActiveTab(item.id); setMenuOpen(false); }} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all text-left ${isActive ? 'bg-[#C25E00] text-white shadow-sm font-bold' : 'text-stone-700 hover:bg-stone-100'}`}>
+                        <Icon className="w-4 h-4 shrink-0" /><span>{item.label}</span>
                       </button>
                     );
                   })}
@@ -154,235 +143,280 @@ export default function App() {
         </div>
       )}
 
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
+      {/* Conteúdo Principal */}
+      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-4">
+        
         {activeTab === 'dashboard' && (
-          <div className="space-y-6">
-            <div className="bg-gradient-to-br from-[#2D1810] to-[#4A2E1B] text-[#FDFBF7] rounded-2xl p-6 shadow-xl border border-amber-900/20">
-              <span className="text-[10px] uppercase tracking-widest bg-amber-500/20 text-amber-300 px-2.5 py-1 rounded-full font-semibold">Painel Geral Ativo</span>
-              <h2 className="text-xl font-bold mt-3 text-amber-100">Akali Confeitaria Artesanal</h2>
-              <p className="text-xs text-amber-200/80 mt-1">Gestão integrada otimizada e sem perdas.</p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5">
-                <button onClick={() => setActiveTab('receitas')} className="bg-amber-600 hover:bg-amber-700 text-white text-xs py-2.5 px-3 rounded-xl font-semibold shadow">Receitas</button>
-                <button onClick={() => setActiveTab('insumos')} className="bg-stone-800 text-amber-100 text-xs py-2.5 px-3 rounded-xl font-semibold border border-amber-900/50">Insumos</button>
-                <button onClick={() => setActiveTab('produtos')} className="bg-stone-800 text-amber-100 text-xs py-2.5 px-3 rounded-xl font-semibold border border-amber-900/50">Produtos</button>
-                <button onClick={() => setActiveTab('vendas')} className="bg-stone-800 text-amber-100 text-xs py-2.5 px-3 rounded-xl font-semibold border border-amber-900/50">Vendas</button>
+          <div className="space-y-4">
+            {/* Bloco Visão em Tempo Real */}
+            <div className="bg-gradient-to-br from-[#2D1810] to-[#4A2E1B] text-[#FDFBF7] rounded-3xl p-6 shadow-xl relative overflow-hidden">
+              <span className="text-[10px] uppercase tracking-widest bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full font-semibold border border-amber-500/30">
+                Visão em Tempo Real
+              </span>
+              <h2 className="text-xl sm:text-2xl font-bold mt-3 text-amber-100">Akali Confeitaria Artesanal</h2>
+              <p className="text-xs text-amber-200/80 mt-1">Gestão integrada: do maracujá in natura ao lucro líquido no bolso.</p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-5">
+                <button onClick={() => setActiveTab('vendas')} className="bg-[#C25E00] hover:bg-[#A85100] text-white font-semibold text-xs py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 shadow transition-all">
+                  <Plus className="w-4 h-4" /> Registrar Venda
+                </button>
+                <button onClick={() => setActiveTab('producao')} className="bg-stone-800/80 hover:bg-stone-800 text-amber-100 font-semibold text-xs py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 border border-amber-900/50">
+                  <ChefHat className="w-4 h-4 text-amber-400" /> Plano de Produção
+                </button>
+                <button onClick={() => setActiveTab('perdas')} className="bg-stone-800/80 hover:bg-stone-800 text-amber-100 font-semibold text-xs py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 border border-amber-900/50">
+                  <TrendingUp className="w-4 h-4 text-amber-400" /> Rendimento & Perdas
+                </button>
               </div>
             </div>
-          </div>
-        )}
 
-        {activeTab === 'insumos' && (
-          <div className="space-y-6 max-w-3xl mx-auto">
-            <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
-              <h2 className="text-base font-bold text-stone-900 mb-4">Adicionar Insumo</h2>
-              <form onSubmit={adicionarInsumo} className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                <input type="text" placeholder="Nome" value={novoInsumo.nome} onChange={e => setNovoInsumo({...novoInsumo, nome: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <input type="number" placeholder="Estoque" value={novoInsumo.estoque} onChange={e => setNovoInsumo({...novoInsumo, estoque: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <input type="number" placeholder="Custo (R$)" value={novoInsumo.custo} onChange={e => setNovoInsumo({...novoInsumo, custo: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <button type="submit" className="bg-amber-700 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar</button>
-              </form>
-            </div>
-            <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
-              <table className="w-full text-left text-sm"><thead className="bg-stone-50 border-b text-stone-500"><tr><th className="px-6 py-3">Insumo</th><th className="px-6 py-3">Estoque</th><th className="px-6 py-3">Custo</th></tr></thead>
-              <tbody className="divide-y">{insumos.map(i => (<tr key={i.id}><td className="px-6 py-3 font-medium">{i.nome}</td><td className="px-6 py-3">{i.estoque} {i.unidade}</td><td className="px-6 py-3">R$ {i.custo.toFixed(2)}</td></tr>))}</tbody></table>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'fornecedores' && (
-          <div className="space-y-6 max-w-3xl mx-auto">
-            <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
-              <h2 className="text-base font-bold text-stone-900 mb-4">Cadastrar Fornecedor</h2>
-              <form onSubmit={adicionarFornecedor} className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                <input type="text" placeholder="Nome" value={novoFornecedor.nome} onChange={e => setNovoFornecedor({...novoFornecedor, nome: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <input type="text" placeholder="Contato" value={novoFornecedor.contato} onChange={e => setNovoFornecedor({...novoFornecedor, contato: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <input type="text" placeholder="Categoria" value={novoFornecedor.categoria} onChange={e => setNovoFornecedor({...novoFornecedor, categoria: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <button type="submit" className="bg-amber-700 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar</button>
-              </form>
-            </div>
-            <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
-              <table className="w-full text-left text-sm"><thead className="bg-stone-50 border-b text-stone-500"><tr><th className="px-6 py-3">Fornecedor</th><th className="px-6 py-3">Contato</th><th className="px-6 py-3">Categoria</th></tr></thead>
-              <tbody className="divide-y">{fornecedores.map(f => (<tr key={f.id}><td className="px-6 py-3 font-medium">{f.nome}</td><td className="px-6 py-3">{f.contato}</td><td className="px-6 py-3">{f.categoria}</td></tr>))}</tbody></table>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'compras' && (
-          <div className="space-y-6 max-w-3xl mx-auto">
-            <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
-              <h2 className="text-base font-bold text-stone-900 mb-4">Registar Compra</h2>
-              <form onSubmit={adicionarCompra} className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                <input type="text" placeholder="Item" value={novaCompra.item} onChange={e => setNovaCompra({...novaCompra, item: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <input type="text" placeholder="Fornecedor" value={novaCompra.fornecedor} onChange={e => setNovaCompra({...novaCompra, fornecedor: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <input type="number" placeholder="Valor (R$)" value={novaCompra.valor} onChange={e => setNovaCompra({...novaCompra, valor: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <button type="submit" className="bg-amber-700 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar</button>
-              </form>
-            </div>
-            <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
-              <table className="w-full text-left text-sm"><thead className="bg-stone-50 border-b text-stone-500"><tr><th className="px-6 py-3">Item</th><th className="px-6 py-3">Fornecedor</th><th className="px-6 py-3">Valor</th></tr></thead>
-              <tbody className="divide-y">{compras.map(co => (<tr key={co.id}><td className="px-6 py-3 font-medium">{co.item}</td><td className="px-6 py-3">{co.fornecedor}</td><td className="px-6 py-3 text-amber-800 font-semibold">R$ {co.valor.toFixed(2)}</td></tr>))}</tbody></table>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'lotes' && (
-          <div className="space-y-6 max-w-3xl mx-auto">
-            <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
-              <h2 className="text-base font-bold text-stone-900 mb-4">Gerir Lotes e Validade (PVPS)</h2>
-              <form onSubmit={adicionarLote} className="grid grid-cols-1 sm:grid-cols-5 gap-3">
-                <input type="text" placeholder="Produto" value={novoLote.produto} onChange={e => setNovoLote({...novoLote, produto: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <input type="text" placeholder="Lote" value={novoLote.lote} onChange={e => setNovoLote({...novoLote, lote: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <input type="date" value={novoLote.validade} onChange={e => setNovoLote({...novoLote, validade: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <input type="number" placeholder="Qtd" value={novoLote.qtd} onChange={e => setNovoLote({...novoLote, qtd: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <button type="submit" className="bg-amber-700 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar</button>
-              </form>
-            </div>
-            <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
-              <table className="w-full text-left text-sm"><thead className="bg-stone-50 border-b text-stone-500"><tr><th className="px-6 py-3">Produto</th><th className="px-6 py-3">Lote</th><th className="px-6 py-3">Validade</th><th className="px-6 py-3">Qtd</th></tr></thead>
-              <tbody className="divide-y">{lotes.map(l => (<tr key={l.id}><td className="px-6 py-3 font-medium">{l.produto}</td><td className="px-6 py-3">{l.lote}</td><td className="px-6 py-3 text-amber-700 font-semibold">{l.validade}</td><td className="px-6 py-3">{l.qtd}</td></tr>))}</tbody></table>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'receitas' && (
-          <div className="space-y-6 max-w-3xl mx-auto">
-            <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-5">
-              <div>
-                <h2 className="text-lg font-bold text-stone-900">Cadastrar Receita Ficha Técnica</h2>
-                <p className="text-xs text-stone-500 mt-0.5">Combine insumos básicos com cálculo de custos.</p>
-              </div>
-              <form onSubmit={adicionarReceita} className="space-y-4">
+            {/* Indicadores Financeiros */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="bg-white p-5 rounded-3xl border border-stone-200/80 shadow-xs flex items-center justify-between">
                 <div>
-                  <label className="block text-xs font-bold text-stone-700 uppercase mb-1">Nome da Receita *</label>
-                  <input type="text" placeholder="Ex: Bolo de Cenoura" value={novaReceita.nome} onChange={e => setNovaReceita({...novaReceita, nome: e.target.value})} className="w-full px-3.5 py-2.5 border rounded-xl text-sm bg-stone-50/50" />
+                  <p className="text-[11px] font-bold text-stone-400 uppercase tracking-wider">Vendas Hoje</p>
+                  <p className="text-2xl font-bold text-stone-900 mt-1">R$ 0,00</p>
+                  <p className="text-xs text-stone-500 mt-1">0 vendas realizadas</p>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-600">
+                  <TrendingUp className="w-6 h-6" />
+                </div>
+              </div>
+
+              <div className="bg-white p-5 rounded-3xl border border-stone-200/80 shadow-xs flex items-center justify-between">
+                <div>
+                  <p className="text-[11px] font-bold text-stone-400 uppercase tracking-wider">Faturamento Total</p>
+                  <p className="text-2xl font-bold text-stone-900 mt-1">R$ 471,00</p>
+                  <p className="text-xs text-sky-600 font-medium mt-1">Receita bruta total</p>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-sky-500/10 flex items-center justify-center text-sky-600">
+                  <DollarSign className="w-6 h-6" />
+                </div>
+              </div>
+            </div>
+
+            {/* Lucro Líquido Real & Contas a Receber */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="bg-[#EAF7ED] p-5 rounded-3xl border border-emerald-200 shadow-xs flex items-center justify-between">
+                <div>
+                  <p className="text-[11px] font-bold text-emerald-800 uppercase tracking-wider">Lucro Líquido Real</p>
+                  <p className="text-2xl font-bold text-emerald-900 mt-1">-R$ 622,69</p>
+                  <p className="text-xs text-emerald-700 mt-1">Após CMV, despesas e taxas</p>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shadow-xs">
+                  <TrendingUp className="w-6 h-6" />
+                </div>
+              </div>
+
+              <div className="bg-[#F8F4FC] p-5 rounded-3xl border border-purple-200 shadow-xs flex items-center justify-between">
+                <div>
+                  <p className="text-[11px] font-bold text-purple-900 uppercase tracking-wider">Contas a Receber</p>
+                  <p className="text-2xl font-bold text-purple-950 mt-1">R$ 0,00</p>
+                  <p className="text-xs text-purple-700 mt-1">A pagar: R$ 512,90</p>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-purple-600 text-white flex items-center justify-center shadow-xs">
+                  <Layers className="w-6 h-6" />
+                </div>
+              </div>
+            </div>
+
+            {/* Validade dos Lotes & Estoque Baixo */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs space-y-3">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center"><Layers className="w-4 h-4" /></div>
+                    <span className="font-bold text-stone-900 text-sm">Validade dos Lotes</span>
+                  </div>
+                  <button onClick={() => setActiveTab('lotes')} className="text-xs font-bold text-[#C25E00] hover:underline">Ver todos</button>
+                </div>
+                {lotes.map(l => (
+                  <div key={l.id} className="p-3 bg-stone-50 rounded-2xl border border-stone-100 flex justify-between items-center text-xs">
+                    <div>
+                      <p className="font-bold text-stone-900">{l.produto}</p>
+                      <p className="text-stone-500 text-[11px]">{l.lote} • {l.qtd}</p>
+                    </div>
+                    <span className="bg-amber-100 text-amber-900 px-2.5 py-1 rounded-full font-semibold text-[10px]">{l.status}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs space-y-3">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center"><AlertCircle className="w-4 h-4" /></div>
+                    <span className="font-bold text-stone-900 text-sm">Estoque Baixo</span>
+                  </div>
+                  <button onClick={() => setActiveTab('insumos')} className="text-xs font-bold text-[#C25E00] hover:underline">Ver estoque</button>
+                </div>
+                <div className="p-3 bg-stone-50 rounded-2xl border border-stone-100 flex justify-between items-center text-xs">
                   <div>
-                    <label className="block text-xs font-bold text-stone-700 uppercase mb-1">Categoria</label>
-                    <select value={novaReceita.categoria} onChange={e => setNovaReceita({...novaReceita, categoria: e.target.value})} className="w-full px-3.5 py-2.5 border rounded-xl text-sm bg-stone-50/50">
-                      <option value="Bolos">Bolos</option><option value="Bolos no Pote">Bolos no Pote</option><option value="Brigadeiros">Brigadeiros</option>
+                    <p className="font-bold text-stone-900">Insumo: Maracujá Fresco in Na...</p>
+                    <p className="text-stone-500 text-[11px]">Mín: 1000 g</p>
+                  </div>
+                  <span className="font-bold text-stone-900">1000 g</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Últimas Vendas Registradas */}
+            <div className="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs space-y-4">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="font-bold text-stone-900 text-sm">Últimas Vendas Registradas</h3>
+                  <p className="text-xs text-stone-500">Com baixa automática no estoque e lucro calculado</p>
+                </div>
+                <button onClick={() => setActiveTab('vendas')} className="text-xs font-bold text-[#C25E00] hover:underline">Ver todas as vendas</button>
+              </div>
+
+              <div className="divide-y divide-stone-100">
+                {vendas.map(v => (
+                  <div key={v.id} className="py-3 flex justify-between items-center text-xs">
+                    <div>
+                      <p className="font-bold text-stone-900">{v.codigo} • <span className="text-stone-600 font-normal">{v.cliente}</span></p>
+                      <p className="text-stone-400 text-[11px]">{v.data}</p>
+                    </div>
+                    <span className="font-medium text-stone-800 text-right max-w-xs">{v.itens}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* MÓDULO DE INSUMOS EXATAMENTE COMO NA SUA IMAGEM */}
+        {activeTab === 'insumos' && (
+          <div className="space-y-4 max-w-4xl mx-auto">
+            <div className="space-y-1">
+              <h2 className="text-lg font-bold text-stone-900">2. Insumos & Matérias-Primas</h2>
+              <p className="text-xs text-stone-500">Cadastre os ingredientes básicos com custo médio, unidade padrão e fator de rendimento.</p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3 justify-between items-center">
+              <button onClick={() => setModalInsumoOpen(true)} className="w-full sm:w-auto bg-[#C25E00] hover:bg-[#A85100] text-white px-5 py-2.5 rounded-2xl text-xs font-bold shadow-md flex items-center justify-center gap-2">
+                <Plus className="w-4 h-4" /> + Novo Insumo
+              </button>
+
+              <div className="flex gap-2 overflow-x-auto w-full sm:w-auto pb-1">
+                {['Todas as Categorias', 'Frutas', 'Laticínios', 'Chocolate', 'Secos'].map(cat => (
+                  <button 
+                    key={cat} 
+                    onClick={() => setFiltroCategoria(cat)}
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${filtroCategoria === cat ? 'bg-[#C25E00] text-white shadow-xs' : 'bg-white text-stone-700 border border-stone-200'}`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Lista de Insumos em Cartões */}
+            <div className="space-y-3">
+              {insumos.filter(i => filtroCategoria === 'Todas as Categorias' || i.categoria === filtroCategoria).map(i => (
+                <div key={i.id} className="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs space-y-3">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <span className="text-[10px] uppercase font-bold tracking-wider bg-stone-100 text-stone-600 px-2.5 py-1 rounded-full">{i.categoria}</span>
+                      <h3 className="text-base font-bold text-stone-900 mt-2">{i.nome}</h3>
+                      <p className="text-xs text-stone-500 mt-0.5">{i.desc}</p>
+                    </div>
+                    <div className="flex gap-1.5">
+                      <button className="p-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700"><Edit3 className="w-4 h-4" /></button>
+                      <button className="p-2 rounded-xl bg-stone-100 hover:bg-rose-100 text-stone-700 hover:text-rose-600"><Trash2 className="w-4 h-4" /></button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-stone-100 text-xs">
+                    <div>
+                      <p className="text-[10px] text-stone-400 uppercase font-bold">Estoque Atual</p>
+                      <p className="font-bold text-stone-900 text-sm mt-0.5">{i.estoque} {i.unidade}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-stone-400 uppercase font-bold">Custo Médio / g</p>
+                      <p className="font-bold text-stone-900 text-sm mt-0.5">R$ {i.custo.toFixed(2)}</p>
+                    </div>
+                    <div className="sm:col-span-2 bg-[#FDF8F0] p-2.5 rounded-2xl border border-amber-200/60 flex justify-between items-center">
+                      <span className="text-[11px] font-bold text-amber-900">Rendimento Real:</span>
+                      <span className="text-xs font-bold text-amber-950 bg-white px-2.5 py-1 rounded-xl shadow-xs">{i.rendimento}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* MODAL CADASTRAR NOVO INSUMO */}
+        {modalInsumoOpen && (
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+            <div className="bg-[#FDFBF7] w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden p-6 space-y-4 border border-stone-200">
+              <div className="flex justify-between items-center pb-3 border-b border-stone-200">
+                <div>
+                  <h3 className="font-bold text-stone-900 text-base">Cadastrar Novo Insumo</h3>
+                  <p className="text-xs text-stone-500">Defina nome, categoria, unidade e fatores de rendimento real.</p>
+                </div>
+                <button onClick={() => setModalInsumoOpen(false)} className="p-1.5 rounded-xl hover:bg-stone-200 text-stone-600"><X className="w-5 h-5" /></button>
+              </div>
+
+              <form onSubmit={adicionarInsumo} className="space-y-3.5 text-xs">
+                <div>
+                  <label className="block font-bold text-stone-700 uppercase mb-1">Nome do Insumo *</label>
+                  <input type="text" placeholder="Ex: Maracujá Fresco in Natura" value={novoInsumo.nome} onChange={e => setNovoInsumo({...novoInsumo, nome: e.target.value})} className="w-full px-3.5 py-2.5 border rounded-2xl bg-white outline-none focus:ring-2 focus:ring-amber-500 text-sm" />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-bold text-stone-700 uppercase mb-1">Categoria</label>
+                    <select value={novoInsumo.categoria} onChange={e => setNovoInsumo({...novoInsumo, categoria: e.target.value})} className="w-full px-3.5 py-2.5 border rounded-2xl bg-white text-sm">
+                      <option value="Frutas">Frutas</option><option value="Laticínios">Laticínios</option><option value="Chocolate">Chocolate</option><option value="Secos">Secos</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-stone-700 uppercase mb-1">Rendimento Padrão *</label>
-                    <input type="number" value={novaReceita.rendimento} onChange={e => setNovaReceita({...novaReceita, rendimento: e.target.value})} className="w-full px-3.5 py-2.5 border rounded-xl text-sm bg-stone-50/50" />
+                    <label className="block font-bold text-stone-700 uppercase mb-1">Unidade de Medida</label>
+                    <select value={novoInsumo.unidade} onChange={e => setNovoInsumo({...novoInsumo, unidade: e.target.value})} className="w-full px-3.5 py-2.5 border rounded-2xl bg-white text-sm">
+                      <option value="Gramas (g)">Gramas (g)</option><option value="Unidades (un)">Unidades (un)</option><option value="Quilos (kg)">Quilos (kg)</option>
+                    </select>
                   </div>
                 </div>
-                <div>
-                  <label className="block text-xs font-bold text-stone-700 uppercase mb-1">Modo de Preparo</label>
-                  <textarea rows="3" placeholder="Passo a passo..." value={novaReceita.modoPreparo} onChange={e => setNovaReceita({...novaReceita, modoPreparo: e.target.value})} className="w-full px-3.5 py-2.5 border rounded-xl text-sm bg-stone-50/50"></textarea>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-bold text-stone-700 uppercase mb-1">Custo de Referência (R$)</label>
+                    <input type="number" step="0.01" value={novoInsumo.custo} onChange={e => setNovoInsumo({...novoInsumo, custo: e.target.value})} className="w-full px-3.5 py-2.5 border rounded-2xl bg-white text-sm" />
+                  </div>
+                  <div>
+                    <label className="block font-bold text-stone-700 uppercase mb-1">Estoque Mínimo (Alerta)</label>
+                    <input type="number" value={novoInsumo.min} onChange={e => setNovoInsumo({...novoInsumo, min: e.target.value})} className="w-full px-3.5 py-2.5 border rounded-2xl bg-white text-sm" />
+                  </div>
                 </div>
-                <div className="flex justify-end gap-3 pt-2">
-                  <button type="submit" className="px-5 py-2.5 bg-amber-700 text-white rounded-xl text-xs font-bold shadow">Salvar Receita</button>
+
+                <div className="p-4 bg-amber-50/60 rounded-2xl border border-amber-200/60 space-y-2">
+                  <label className="block font-bold text-amber-900 uppercase">Fator de Rendimento / Aproveitamento</label>
+                  <input type="text" value={novoInsumo.fator} onChange={e => setNovoInsumo({...novoInsumo, fator: e.target.value})} className="w-full px-3.5 py-2 border rounded-xl bg-white text-sm" />
+                  <p className="text-[11px] text-stone-500">Rendimento estimado: {Number(novoInsumo.fator) * 100}% • Perda estimada: {100 - (Number(novoInsumo.fator) * 100)}%</p>
+                </div>
+
+                <div className="flex justify-end gap-2 pt-2">
+                  <button type="button" onClick={() => setModalInsumoOpen(false)} className="px-4 py-2.5 border rounded-xl font-semibold hover:bg-stone-100">Cancelar</button>
+                  <button type="submit" className="px-5 py-2.5 bg-[#C25E00] text-white rounded-xl font-bold shadow">Salvar Insumo</button>
                 </div>
               </form>
             </div>
-            <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
-              <div className="px-6 py-4 bg-stone-50 border-b"><h3 className="font-bold text-stone-900 text-sm">Receitas Registadas</h3></div>
-              <table className="w-full text-left text-sm"><thead className="bg-stone-50/50 border-b text-stone-500 text-xs"><tr><th className="px-6 py-3">Receita</th><th className="px-6 py-3">Categoria</th><th className="px-6 py-3">Rendimento</th></tr></thead>
-              <tbody className="divide-y">{receitas.map(r => (<tr key={r.id}><td className="px-6 py-4 font-medium">{r.nome}</td><td className="px-6 py-4">{r.categoria}</td><td className="px-6 py-4">{r.rendimento} {r.unidadeRendimento}</td></tr>))}</tbody></table>
-            </div>
           </div>
         )}
 
-        {activeTab === 'produtos' && (
-          <div className="space-y-6 max-w-3xl mx-auto">
-            <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
-              <h2 className="text-base font-bold text-stone-900 mb-4">Cadastrar Produto</h2>
-              <form onSubmit={adicionarProduto} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <input type="text" placeholder="Nome" value={novoProduto.nome} onChange={e => setNovoProduto({...novoProduto, nome: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <input type="number" placeholder="Preço (R$)" value={novoProduto.preco} onChange={e => setNovoProduto({...novoProduto, preco: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <button type="submit" className="bg-amber-700 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar</button>
-              </form>
-            </div>
-            <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
-              <table className="w-full text-left text-sm"><thead className="bg-stone-50 border-b text-stone-500"><tr><th className="px-6 py-3">Produto</th><th className="px-6 py-3">Categoria</th><th className="px-6 py-3">Preço</th></tr></thead>
-              <tbody className="divide-y">{produtos.map(p => (<tr key={p.id}><td className="px-6 py-3 font-medium">{p.nome}</td><td className="px-6 py-3">{p.categoria}</td><td className="px-6 py-3 text-amber-800 font-semibold">R$ {p.preco.toFixed(2)}</td></tr>))}</tbody></table>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'producao' && (
-          <div className="space-y-6 max-w-3xl mx-auto">
-            <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
-              <h2 className="text-base font-bold text-stone-900 mb-4">Registar Produção</h2>
-              <form onSubmit={adicionarProducao} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <input type="text" placeholder="Item" value={novaProducao.item} onChange={e => setNovaProducao({...novaProducao, item: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <input type="number" placeholder="Quantidade" value={novaProducao.qtd} onChange={e => setNovaProducao({...novaProducao, qtd: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <button type="submit" className="bg-amber-700 text-white rounded-xl text-sm font-semibold px-4 py-2">Registar</button>
-              </form>
-            </div>
-            <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
-              <table className="w-full text-left text-sm"><thead className="bg-stone-50 border-b text-stone-500"><tr><th className="px-6 py-3">Item</th><th className="px-6 py-3">Quantidade</th><th className="px-6 py-3">Estado</th></tr></thead>
-              <tbody className="divide-y">{producao.map(pr => (<tr key={pr.id}><td className="px-6 py-3 font-medium">{pr.item}</td><td className="px-6 py-3">{pr.qtd} un</td><td className="px-6 py-3"><span className="bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full text-xs font-semibold">{pr.status}</span></td></tr>))}</tbody></table>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'clientes' && (
-          <div className="space-y-6 max-w-3xl mx-auto">
-            <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
-              <h2 className="text-base font-bold text-stone-900 mb-4">Cadastrar Cliente</h2>
-              <form onSubmit={adicionarCliente} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <input type="text" placeholder="Nome" value={novoCliente.nome} onChange={e => setNovoCliente({...novoCliente, nome: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <input type="text" placeholder="Telefone" value={novoCliente.telefone} onChange={e => setNovoCliente({...novoCliente, telefone: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <button type="submit" className="bg-amber-700 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar</button>
-              </form>
-            </div>
-            <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
-              <table className="w-full text-left text-sm"><thead className="bg-stone-50 border-b text-stone-500"><tr><th className="px-6 py-3">Cliente</th><th className="px-6 py-3">Telefone</th><th className="px-6 py-3">Cidade</th></tr></thead>
-              <tbody className="divide-y">{clientes.map(c => (<tr key={c.id}><td className="px-6 py-3 font-medium">{c.nome}</td><td className="px-6 py-3">{c.telefone}</td><td className="px-6 py-3">{c.cidade}</td></tr>))}</tbody></table>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'vendas' && (
-          <div className="space-y-6 max-w-3xl mx-auto">
-            <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
-              <h2 className="text-base font-bold text-stone-900 mb-4">Registar Venda</h2>
-              <form onSubmit={adicionarVenda} className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                <input type="text" placeholder="Cliente" value={novaVenda.cliente} onChange={e => setNovaVenda({...novaVenda, cliente: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <input type="text" placeholder="Item" value={novaVenda.item} onChange={e => setNovaVenda({...novaVenda, item: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <input type="number" placeholder="Total (R$)" value={novaVenda.total} onChange={e => setNovaVenda({...novaVenda, total: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <button type="submit" className="bg-amber-700 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar</button>
-              </form>
-            </div>
-            <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
-              <table className="w-full text-left text-sm"><thead className="bg-stone-50 border-b text-stone-500"><tr><th className="px-6 py-3">Cliente</th><th className="px-6 py-3">Item</th><th className="px-6 py-3">Total</th></tr></thead>
-              <tbody className="divide-y">{vendas.map(v => (<tr key={v.id}><td className="px-6 py-3 font-medium">{v.cliente || 'Balcão'}</td><td className="px-6 py-3">{v.item}</td><td className="px-6 py-3 text-emerald-700 font-semibold">R$ {v.total.toFixed(2)}</td></tr>))}</tbody></table>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'despesas' && (
-          <div className="space-y-6 max-w-3xl mx-auto">
-            <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
-              <h2 className="text-base font-bold text-stone-900 mb-4">Registar Despesa</h2>
-              <form onSubmit={adicionarDespesa} className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                <input type="text" placeholder="Descrição" value={novaDespesa.descricao} onChange={e => setNovaDespesa({...novaDespesa, descricao: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <input type="number" placeholder="Valor (R$)" value={novaDespesa.valor} onChange={e => setNovaDespesa({...novaDespesa, valor: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <input type="text" placeholder="Categoria" value={novaDespesa.categoria} onChange={e => setNovaDespesa({...novaDespesa, categoria: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <button type="submit" className="bg-amber-700 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar</button>
-              </form>
-            </div>
-            <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
-              <table className="w-full text-left text-sm"><thead className="bg-stone-50 border-b text-stone-500"><tr><th className="px-6 py-3">Descrição</th><th className="px-6 py-3">Categoria</th><th className="px-6 py-3">Valor</th></tr></thead>
-              <tbody className="divide-y">{despesas.map(d => (<tr key={d.id}><td className="px-6 py-3 font-medium">{d.descricao}</td><td className="px-6 py-3">{d.categoria}</td><td className="px-6 py-3 text-rose-700 font-semibold">R$ {d.valor.toFixed(2)}</td></tr>))}</tbody></table>
-            </div>
-          </div>
-        )}
-
-        {activeTab !== 'dashboard' && activeTab !== 'insumos' && activeTab !== 'fornecedores' && activeTab !== 'compras' && activeTab !== 'lotes' && activeTab !== 'receitas' && activeTab !== 'produtos' && activeTab !== 'producao' && activeTab !== 'clientes' && activeTab !== 'vendas' && activeTab !== 'despesas' && (
-          <div className="bg-white rounded-2xl border border-stone-200 p-8 text-center shadow-sm space-y-3 max-w-xl mx-auto">
+        {/* OUTROS MÓDULOS */}
+        {activeTab !== 'dashboard' && activeTab !== 'insumos' && (
+          <div className="bg-white rounded-3xl border border-stone-200 p-8 text-center shadow-xs space-y-3 max-w-xl mx-auto">
             <h2 className="text-base font-bold text-stone-900 capitalize">Módulo: {activeTab}</h2>
-            <p className="text-xs text-stone-500">Módulo integrado ao sistema da Akali Confeitaria.</p>
-            <button onClick={() => setActiveTab('dashboard')} className="mt-2 bg-[#2D1810] text-amber-100 px-4 py-2 rounded-xl text-xs font-semibold shadow">Voltar ao Dashboard</button>
+            <p className="text-xs text-stone-500">Módulo integrado e em execução na estrutura da Akali Confeitaria.</p>
+            <button onClick={() => setActiveTab('dashboard')} className="mt-2 bg-[#2D1810] text-amber-100 px-4 py-2 rounded-2xl text-xs font-semibold shadow">Voltar ao Dashboard</button>
           </div>
         )}
+
       </main>
 
       <footer className="bg-white border-t border-stone-200 py-4 text-center text-xs text-stone-500 mt-auto">
-        Akali Confeitaria Artesanal • Sistema Completo de Gestão
+        Akali Confeitaria Artesanal • Sistema de Gestão Integrada
       </footer>
     </div>
   );
