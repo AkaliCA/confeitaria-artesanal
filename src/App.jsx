@@ -2,75 +2,91 @@ import React, { useState } from 'react';
 import { 
   LayoutDashboard, Package, ShoppingCart, Layers, 
   ArrowLeftRight, DollarSign, Users, Truck, Sparkles, Plus, Search, CheckCircle2, 
-  Menu, X, ChefHat, BookOpen, Calculator, FileText, Settings, BarChart3, AlertCircle, Box, DollarSign as Cash
+  Menu, X, ChefHat, BookOpen, Calculator, FileText, Settings, BarChart3, AlertCircle, Box
 } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Estados dos Módulos da Akali Confeitaria Artesanal
+  // Estados dos módulos
   const [insumos, setInsumos] = useState([
     { id: 1, nome: 'Leite Moça (Nestlé)', estoque: 18, unidade: 'un', custo: 8.50, min: 5 },
     { id: 2, nome: 'Chocolate Belga 50%', estoque: 3.5, unidade: 'kg', custo: 65.00, min: 2 },
     { id: 3, nome: 'Manteiga com Sal', estoque: 10, unidade: 'un', custo: 10.00, min: 4 }
   ]);
 
-  const [novoInsumo, setNovoInsumo] = useState({ nome: '', estoque: '', unidade: 'un', custo: '', min: '' });
+  const [fornecedores, setFornecedores] = useState([
+    { id: 1, nome: 'Atacadão Itapevi', contato: '(11) 4002-8922', categoria: 'Embalagens e Leite Condensado' },
+    { id: 2, nome: 'Loja de Confeitaria Doce Mel', contato: '(11) 97777-6666', categoria: 'Chocolates e Moldes' }
+  ]);
+
+  const [produtos, setProdutos] = useState([
+    { id: 1, nome: 'Bolo no Pote de Ninho com Morango', preco: 15.00, categoria: 'Bolos no Pote' },
+    { id: 2, nome: 'Brigadeiro Gourmet Belga (Caixa c/ 4)', preco: 18.00, categoria: 'Brigadeiros' }
+  ]);
+
+  const [clientes, setClientes] = useState([
+    { id: 1, nome: 'Mariana Silva', telefone: '(11) 98888-7777', cidade: 'Itapevi/SP' }
+  ]);
+
+  // Estados dos formulários
+  const [novoInsumo, setNovoInsumo] = useState({ nome: '', estoque: '', unidade: 'un', custo: '', min: 5 });
+  const [novoFornecedor, setNovoFornecedor] = useState({ nome: '', contato: '', categoria: '' });
+  const [novoProduto, setNovoProduto] = useState({ nome: '', preco: '', categoria: 'Bolos no Pote' });
+  const [novoCliente, setNovoCliente] = useState({ nome: '', telefone: '', cidade: 'Itapevi/SP' });
 
   const adicionarInsumo = (e) => {
     e.preventDefault();
     if (!novoInsumo.nome || !novoInsumo.estoque || !novoInsumo.custo) return;
-    setInsumos([...insumos, { 
-      id: Date.now(), 
-      nome: novoInsumo.nome, 
-      estoque: Number(novoInsumo.estoque), 
-      unidade: novoInsumo.unidade, 
-      custo: Number(novoInsumo.custo),
-      min: Number(novoInsumo.min || 2)
-    }]);
-    setNovoInsumo({ nome: '', estoque: '', unidade: 'un', custo: '', min: '' });
+    setInsumos([...insumos, { id: Date.now(), ...novoInsumo, estoque: Number(novoInsumo.estoque), custo: Number(novoInsumo.custo) }]);
+    setNovoInsumo({ nome: '', estoque: '', unidade: 'un', custo: '', min: 5 });
+  };
+
+  const adicionarFornecedor = (e) => {
+    e.preventDefault();
+    if (!novoFornecedor.nome) return;
+    setFornecedores([...fornecedores, { id: Date.now(), ...novoFornecedor }]);
+    setNovoFornecedor({ nome: '', contato: '', categoria: '' });
+  };
+
+  const adicionarProduto = (e) => {
+    e.preventDefault();
+    if (!novoProduto.nome || !novoProduto.preco) return;
+    setProdutos([...produtos, { id: Date.now(), ...novoProduto, preco: Number(novoProduto.preco) }]);
+    setNovoProduto({ nome: '', preco: '', categoria: 'Bolos no Pote' });
+  };
+
+  const adicionarCliente = (e) => {
+    e.preventDefault();
+    if (!novoCliente.nome) return;
+    setClientes([...clientes, { id: Date.now(), ...novoCliente }]);
+    setNovoCliente({ nome: '', telefone: '', cidade: 'Itapevi/SP' });
   };
 
   const menuItems = [
-    { id: 'dashboard', label: '1. Dashboard', icon: LayoutDashboard, category: 'Visão Geral' },
-    { id: 'insumos', label: '2. Insumos', icon: Package, category: 'Insumos & Suprimentos' },
-    { id: 'fornecedores', label: '3. Fornecedores', icon: Truck, category: 'Insumos & Suprimentos' },
-    { id: 'compras', label: '4. Compras', icon: ShoppingCart, category: 'Insumos & Suprimentos' },
-    { id: 'lotes', label: '5. Lotes (PVPS/FEFO)', icon: Layers, category: 'Insumos & Suprimentos' },
-    { id: 'estoque', label: '6. Estoque & Movimentações', icon: ArrowLeftRight, category: 'Insumos & Suprimentos' },
-    { id: 'perdas', label: '7. Rendimento & Perdas', icon: AlertCircle, category: 'Insumos & Suprimentos' },
-    { id: 'preparacoes', label: '8. Preparações', icon: ChefHat, category: 'Produção & Confeitaria' },
-    { id: 'receitas', label: '9. Receitas', icon: BookOpen, category: 'Produção & Confeitaria' },
-    { id: 'produtos', label: '10. Produtos', icon: Sparkles, category: 'Produção & Confeitaria' },
-    { id: 'embalagens', label: '11. Embalagens', icon: Box, category: 'Produção & Confeitaria' },
-    { id: 'producao', label: '12. Produção', icon: ChefHat, category: 'Produção & Confeitaria' },
-    { id: 'validade', label: '13. Validade & Conservação', icon: Layers, category: 'Produção & Confeitaria' },
-    { id: 'clientes', label: '14. Clientes', icon: Users, category: 'Vendas & Clientes' },
-    { id: 'vendas', label: '15. Vendas', icon: ShoppingCart, category: 'Vendas & Clientes' },
-    { id: 'entregas', label: '16. Entregas', icon: Truck, category: 'Vendas & Clientes' },
-    { id: 'custos', label: '17. Custos', icon: DollarSign, category: 'Gestão Financeira' },
-    { id: 'precificacao', label: '18. Precificação', icon: Calculator, category: 'Gestão Financeira' },
-    { id: 'despesas', label: '19. Despesas', icon: FileText, category: 'Gestão Financeira' },
-    { id: 'financeiro', label: '20. Financeiro', icon: Cash, category: 'Gestão Financeira' },
-    { id: 'relatorios', label: '21. Relatórios', icon: BarChart3, category: 'Gestão Financeira' },
-    { id: 'configuracoes', label: '22. Configurações & Lista', icon: Settings, category: 'Sistema' },
+    { id: 'dashboard', label: '1. Dashboard', icon: LayoutDashboard },
+    { id: 'insumos', label: '2. Insumos', icon: Package },
+    { id: 'fornecedores', label: '3. Fornecedores', icon: Truck },
+    { id: 'produtos', label: '10. Produtos', icon: Sparkles },
+    { id: 'clientes', label: '14. Clientes', icon: Users },
+    { id: 'vendas', label: '15. Vendas', icon: ShoppingCart },
+    { id: 'lotes', label: '5. Lotes (PVPS/FEFO)', icon: Layers },
   ];
 
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-stone-800 flex flex-col font-sans">
       
-      {/* Cabeçalho Superior */}
+      {/* Cabeçalho */}
       <header className="bg-[#2D1810] text-[#FDFBF7] shadow-lg sticky top-0 z-30 border-b border-amber-900/30">
         <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
           <div className="flex items-center gap-3">
             <button 
               onClick={() => setMenuOpen(!menuOpen)}
               className="p-2 rounded-lg bg-amber-900/40 hover:bg-amber-900/60 text-amber-200 transition-colors flex items-center gap-2"
-              aria-label="Abrir Menu"
             >
               <Menu className="w-5 h-5" />
-              <span className="text-xs font-semibold tracking-wide hidden sm:inline">MENU COMPLETO</span>
+              <span className="text-xs font-semibold tracking-wide hidden sm:inline">MENU</span>
             </button>
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber-600 to-amber-800 flex items-center justify-center shadow-md border border-amber-500/30">
@@ -85,34 +101,23 @@ export default function App() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button 
-              onClick={() => setActiveTab('vendas')}
-              className="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold shadow-md flex items-center gap-1.5 transition-all"
-            >
-              <Plus className="w-3.5 h-3.5" /> Nova Venda
-            </button>
-          </div>
+          <button 
+            onClick={() => setActiveTab('vendas')}
+            className="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold shadow-md flex items-center gap-1.5 transition-all"
+          >
+            <Plus className="w-3.5 h-3.5" /> Nova Venda
+          </button>
         </div>
       </header>
 
-      {/* Menu Lateral Deslizante com todas as 22 opções */}
+      {/* Menu Lateral */}
       {menuOpen && (
         <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-xs flex" onClick={() => setMenuOpen(false)}>
-          <div 
-            className="w-80 bg-[#FDFBF7] h-full shadow-2xl overflow-y-auto p-4 flex flex-col border-r border-stone-200"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="w-80 bg-[#FDFBF7] h-full shadow-2xl overflow-y-auto p-4 flex flex-col border-r border-stone-200" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center pb-3 mb-3 border-b border-stone-200">
-              <div>
-                <h2 className="font-bold text-stone-900 text-sm tracking-wide">CONFEITARIA ARTESANAL</h2>
-                <p className="text-[10px] text-stone-500">Sistema 100% Completo & Integrado</p>
-              </div>
-              <button onClick={() => setMenuOpen(false)} className="p-1.5 rounded-lg hover:bg-stone-200 text-stone-600">
-                <X className="w-5 h-5" />
-              </button>
+              <h2 className="font-bold text-stone-900 text-sm">MÓDULOS DO SISTEMA</h2>
+              <button onClick={() => setMenuOpen(false)} className="p-1 rounded-lg hover:bg-stone-200 text-stone-600"><X className="w-5 h-5" /></button>
             </div>
-
             <div className="space-y-1.5 flex-1">
               {menuItems.map((item) => {
                 const Icon = item.icon;
@@ -122,9 +127,7 @@ export default function App() {
                     key={item.id}
                     onClick={() => { setActiveTab(item.id); setMenuOpen(false); }}
                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all text-left ${
-                      isActive 
-                        ? 'bg-[#2D1810] text-amber-100 shadow-sm font-bold' 
-                        : 'text-stone-700 hover:bg-amber-100/60 hover:text-stone-900'
+                      isActive ? 'bg-[#2D1810] text-amber-100 shadow-sm font-bold' : 'text-stone-700 hover:bg-amber-100/60'
                     }`}
                   >
                     <Icon className="w-4 h-4 text-amber-700 shrink-0" />
@@ -133,74 +136,47 @@ export default function App() {
                 );
               })}
             </div>
-
-            <div className="pt-3 mt-3 border-t border-stone-200 text-[10px] text-stone-500 text-center">
-              Moeda: R$ • Sistema Akali Confeitaria
-            </div>
           </div>
         </div>
       )}
 
-      {/* Conteúdo Principal do Painel */}
+      {/* Conteúdo */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
         
         {activeTab === 'dashboard' && (
           <div className="space-y-6">
-            <div className="bg-gradient-to-br from-[#2D1810] to-[#4A2E1B] text-[#FDFBF7] rounded-2xl p-6 shadow-xl relative overflow-hidden border border-amber-900/20">
-              <span className="text-[10px] uppercase tracking-widest bg-amber-500/20 text-amber-300 px-2.5 py-1 rounded-full font-semibold border border-amber-500/30">
-                Visão em Tempo Real
+            <div className="bg-gradient-to-br from-[#2D1810] to-[#4A2E1B] text-[#FDFBF7] rounded-2xl p-6 shadow-xl border border-amber-900/20">
+              <span className="text-[10px] uppercase tracking-widest bg-amber-500/20 text-amber-300 px-2.5 py-1 rounded-full font-semibold">
+                Painel Ativo
               </span>
+              <h2 className="text-xl font-bold mt-3 text-amber-100">Akali Confeitaria Artesanal</h2>
+              <p className="text-xs text-amber-200/80 mt-1">Gestão integrada de insumos, fornecedores, produtos e clientes.</p>
               
-              <h2 className="text-xl sm:text-2xl font-bold mt-3 text-amber-100 tracking-wide">
-                Akali Confeitaria Artesanal
-              </h2>
-              <p className="text-xs text-amber-200/80 mt-1 max-w-xl leading-relaxed">
-                Gestão integrada: do maracujá in natura ao lucro líquido no bolso.
-              </p>
-
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5">
-                <button 
-                  onClick={() => setActiveTab('vendas')}
-                  className="bg-amber-600 hover:bg-amber-700 text-white font-medium text-xs py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 shadow transition-all"
-                >
-                  <Plus className="w-4 h-4" /> Registrar Venda
+                <button onClick={() => setActiveTab('fornecedores')} className="bg-amber-600 hover:bg-amber-700 text-white text-xs py-2.5 px-4 rounded-xl font-semibold shadow">
+                  Gerir Fornecedores
                 </button>
-                <button 
-                  onClick={() => setActiveTab('producao')}
-                  className="bg-stone-800/80 hover:bg-stone-800 text-amber-100 font-medium text-xs py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 border border-amber-900/50 transition-all"
-                >
-                  <ChefHat className="w-4 h-4 text-amber-400" /> Plano de Produção
+                <button onClick={() => setActiveTab('produtos')} className="bg-stone-800 text-amber-100 text-xs py-2.5 px-4 rounded-xl font-semibold border border-amber-900/50">
+                  Ver Produtos
                 </button>
-                <button 
-                  onClick={() => setActiveTab('lotes')}
-                  className="bg-stone-800/80 hover:bg-stone-800 text-amber-100 font-medium text-xs py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 border border-amber-900/50 transition-all"
-                >
-                  <Layers className="w-4 h-4 text-amber-400" /> PVPS / Validades
+                <button onClick={() => setActiveTab('insumos')} className="bg-stone-800 text-amber-100 text-xs py-2.5 px-4 rounded-xl font-semibold border border-amber-900/50">
+                  Gerir Insumos
                 </button>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="bg-white p-5 rounded-2xl border border-stone-200/80 shadow-sm flex items-center justify-between">
-                <div>
-                  <p className="text-[11px] font-bold text-stone-400 uppercase tracking-wider">Vendas Hoje</p>
-                  <p className="text-2xl font-bold text-stone-900 mt-1">R$ 471,00</p>
-                  <p className="text-xs text-stone-500 mt-1">6 vendas realizadas</p>
-                </div>
-                <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600">
-                  <ShoppingCart className="w-6 h-6" />
-                </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm">
+                <p className="text-[11px] font-bold text-stone-400 uppercase">Fornecedores</p>
+                <p className="text-2xl font-bold text-stone-900 mt-1">{fornecedores.length} Cadastrados</p>
               </div>
-
-              <div className="bg-white p-5 rounded-2xl border border-stone-200/80 shadow-sm flex items-center justify-between">
-                <div>
-                  <p className="text-[11px] font-bold text-stone-400 uppercase tracking-wider">Faturamento Total do Mês</p>
-                  <p className="text-2xl font-bold text-stone-900 mt-1">R$ 4.850,00</p>
-                  <p className="text-xs text-emerald-600 font-medium mt-1">Receita bruta consolidada</p>
-                </div>
-                <div className="w-12 h-12 rounded-xl bg-sky-500/10 flex items-center justify-center text-sky-600">
-                  <DollarSign className="w-6 h-6" />
-                </div>
+              <div className="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm">
+                <p className="text-[11px] font-bold text-stone-400 uppercase">Produtos</p>
+                <p className="text-2xl font-bold text-stone-900 mt-1">{produtos.length} Itens</p>
+              </div>
+              <div className="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm">
+                <p className="text-[11px] font-bold text-stone-400 uppercase">Clientes</p>
+                <p className="text-2xl font-bold text-stone-900 mt-1">{clientes.length} Cadastrados</p>
               </div>
             </div>
           </div>
@@ -209,95 +185,125 @@ export default function App() {
         {activeTab === 'insumos' && (
           <div className="space-y-6">
             <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
-              <h2 className="text-base font-bold text-stone-900 mb-4 flex items-center gap-2">
-                <Package className="w-5 h-5 text-amber-700" /> Adicionar Novo Insumo
-              </h2>
-              <form onSubmit={adicionarInsumo} className="grid grid-cols-1 sm:grid-cols-5 gap-3">
-                <input 
-                  type="text" 
-                  placeholder="Nome do Insumo" 
-                  value={novoInsumo.nome}
-                  onChange={(e) => setNovoInsumo({...novoInsumo, nome: e.target.value})}
-                  className="sm:col-span-2 px-3.5 py-2.5 border border-stone-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-amber-500 outline-none"
-                />
-                <input 
-                  type="number" 
-                  placeholder="Qtd" 
-                  value={novoInsumo.estoque}
-                  onChange={(e) => setNovoInsumo({...novoInsumo, estoque: e.target.value})}
-                  className="px-3.5 py-2.5 border border-stone-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-amber-500 outline-none"
-                />
-                <input 
-                  type="number" 
-                  placeholder="Custo (R$)" 
-                  value={novoInsumo.custo}
-                  onChange={(e) => setNovoInsumo({...novoInsumo, custo: e.target.value})}
-                  className="px-3.5 py-2.5 border border-stone-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-amber-500 outline-none"
-                />
-                <button type="submit" className="bg-amber-700 hover:bg-amber-800 text-white rounded-xl text-xs sm:text-sm font-semibold px-4 py-2.5 flex items-center justify-center gap-2 shadow transition-all">
-                  <Plus className="w-4 h-4" /> Salvar
-                </button>
+              <h2 className="text-base font-bold text-stone-900 mb-4">Adicionar Insumo</h2>
+              <form onSubmit={adicionarInsumo} className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                <input type="text" placeholder="Nome" value={novoInsumo.nome} onChange={e => setNovoInsumo({...novoInsumo, nome: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
+                <input type="number" placeholder="Estoque" value={novoInsumo.estoque} onChange={e => setNovoInsumo({...novoInsumo, estoque: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
+                <input type="number" placeholder="Custo (R$)" value={novoInsumo.custo} onChange={e => setNovoInsumo({...novoInsumo, custo: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
+                <button type="submit" className="bg-amber-700 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar Insumo</button>
               </form>
             </div>
-
-            <div className="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-stone-200 bg-stone-50">
-                <h3 className="font-bold text-stone-900 text-sm">Lista de Insumos Registados</h3>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse text-xs sm:text-sm">
-                  <thead>
-                    <tr className="border-b border-stone-200 text-stone-500 bg-stone-50/50">
-                      <th className="px-6 py-3 font-semibold">Insumo</th>
-                      <th className="px-6 py-3 font-semibold">Stock Atual</th>
-                      <th className="px-6 py-3 font-semibold">Custo Unitário</th>
-                      <th className="px-6 py-3 font-semibold">Estado</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-stone-100">
-                    {insumos.map((item) => (
-                      <tr key={item.id} className="hover:bg-stone-50/50">
-                        <td className="px-6 py-4 font-medium text-stone-900">{item.nome}</td>
-                        <td className="px-6 py-4 text-stone-600">{item.estoque} {item.unidade}</td>
-                        <td className="px-6 py-4 text-stone-600">R$ {item.custo.toFixed(2)}</td>
-                        <td className="px-6 py-4">
-                          {item.estoque <= item.min ? (
-                            <span className="bg-rose-100 text-rose-700 text-xs px-2.5 py-1 rounded-full font-semibold">Crítico</span>
-                          ) : (
-                            <span className="bg-emerald-100 text-emerald-700 text-xs px-2.5 py-1 rounded-full font-semibold">Normal</span>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+            <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-stone-50 border-b text-stone-500">
+                  <tr><th className="px-6 py-3">Insumo</th><th className="px-6 py-3">Estoque</th><th className="px-6 py-3">Custo</th></tr>
+                </thead>
+                <tbody className="divide-y">
+                  {insumos.map(i => (
+                    <tr key={i.id}><td className="px-6 py-3 font-medium">{i.nome}</td><td className="px-6 py-3">{i.estoque} {i.unidade}</td><td className="px-6 py-3">R$ {i.custo.toFixed(2)}</td></tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         )}
 
-        {activeTab !== 'dashboard' && activeTab !== 'insumos' && (
-          <div className="bg-white rounded-2xl border border-stone-200 p-8 text-center shadow-sm space-y-3">
-            <div className="w-12 h-12 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center mx-auto">
-              <Sparkles className="w-6 h-6" />
+        {activeTab === 'fornecedores' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
+              <h2 className="text-base font-bold text-stone-900 mb-4 flex items-center gap-2">
+                <Truck className="w-5 h-5 text-amber-700" /> Cadastrar Fornecedor
+              </h2>
+              <form onSubmit={adicionarFornecedor} className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                <input type="text" placeholder="Nome do Fornecedor / Loja" value={novoFornecedor.nome} onChange={e => setNovoFornecedor({...novoFornecedor, nome: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
+                <input type="text" placeholder="Contato / Telefone" value={novoFornecedor.contato} onChange={e => setNovoFornecedor({...novoFornecedor, contato: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
+                <input type="text" placeholder="Categoria (ex: Embalagens)" value={novoFornecedor.categoria} onChange={e => setNovoFornecedor({...novoFornecedor, categoria: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
+                <button type="submit" className="bg-amber-700 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar Fornecedor</button>
+              </form>
             </div>
+            <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-stone-50 border-b text-stone-500">
+                  <tr><th className="px-6 py-3">Fornecedor</th><th className="px-6 py-3">Contato</th><th className="px-6 py-3">Categoria</th></tr>
+                </thead>
+                <tbody className="divide-y">
+                  {fornecedores.map(f => (
+                    <tr key={f.id}><td className="px-6 py-3 font-medium">{f.nome}</td><td className="px-6 py-3">{f.contato}</td><td className="px-6 py-3">{f.categoria}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'produtos' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
+              <h2 className="text-base font-bold text-stone-900 mb-4">Cadastrar Produto</h2>
+              <form onSubmit={adicionarProduto} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <input type="text" placeholder="Nome do Produto" value={novoProduto.nome} onChange={e => setNovoProduto({...novoProduto, nome: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
+                <input type="number" placeholder="Preço (R$)" value={novoProduto.preco} onChange={e => setNovoProduto({...novoProduto, preco: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
+                <button type="submit" className="bg-amber-700 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar Produto</button>
+              </form>
+            </div>
+            <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-stone-50 border-b text-stone-500">
+                  <tr><th className="px-6 py-3">Produto</th><th className="px-6 py-3">Categoria</th><th className="px-6 py-3">Preço</th></tr>
+                </thead>
+                <tbody className="divide-y">
+                  {produtos.map(p => (
+                    <tr key={p.id}><td className="px-6 py-3 font-medium">{p.nome}</td><td className="px-6 py-3">{p.categoria}</td><td className="px-6 py-3 font-semibold text-amber-800">R$ {p.preco.toFixed(2)}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'clientes' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
+              <h2 className="text-base font-bold text-stone-900 mb-4">Cadastrar Cliente</h2>
+              <form onSubmit={adicionarCliente} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <input type="text" placeholder="Nome" value={novoCliente.nome} onChange={e => setNovoCliente({...novoCliente, nome: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
+                <input type="text" placeholder="Telefone" value={novoCliente.telefone} onChange={e => setNovoCliente({...novoCliente, telefone: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
+                <button type="submit" className="bg-amber-700 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar Cliente</button>
+              </form>
+            </div>
+            <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-stone-50 border-b text-stone-500">
+                  <tr><th className="px-6 py-3">Cliente</th><th className="px-6 py-3">Telefone</th><th className="px-6 py-3">Cidade</th></tr>
+                </thead>
+                <tbody className="divide-y">
+                  {clientes.map(c => (
+                    <tr key={c.id}><td className="px-6 py-3 font-medium">{c.nome}</td><td className="px-6 py-3">{c.telefone}</td><td className="px-6 py-3">{c.cidade}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'vendas' && (
+          <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-4">
+            <h2 className="text-base font-bold text-stone-900">Registar Nova Venda</h2>
+            <p className="text-xs text-stone-500">Módulo de registo de pedidos e faturamento diário.</p>
+          </div>
+        )}
+
+        {activeTab !== 'dashboard' && activeTab !== 'insumos' && activeTab !== 'fornecedores' && activeTab !== 'produtos' && activeTab !== 'clientes' && activeTab !== 'vendas' && (
+          <div className="bg-white rounded-2xl border border-stone-200 p-8 text-center shadow-sm space-y-3">
             <h2 className="text-base font-bold text-stone-900 capitalize">Módulo: {activeTab}</h2>
-            <p className="text-xs text-stone-500 max-w-md mx-auto">
-              Este módulo faz parte do sistema integrado da Akali Confeitaria Artesanal. Use o botão de menu no topo esquerdo para alternar entre as 22 ferramentas.
-            </p>
-            <button 
-              onClick={() => setActiveTab('dashboard')}
-              className="mt-2 bg-[#2D1810] text-amber-100 px-4 py-2 rounded-xl text-xs font-semibold shadow hover:bg-stone-900 transition-all"
-            >
-              Voltar ao Dashboard
-            </button>
+            <button onClick={() => setActiveTab('dashboard')} className="mt-2 bg-[#2D1810] text-amber-100 px-4 py-2 rounded-xl text-xs font-semibold">Voltar ao Dashboard</button>
           </div>
         )}
 
       </main>
 
       <footer className="bg-white border-t border-stone-200 py-4 text-center text-xs text-stone-500 mt-auto">
-        Akali Confeitaria Artesanal • Sistema 100% Completo & Integrado
+        Akali Confeitaria Artesanal • Sistema de Gestão
       </footer>
     </div>
   );
