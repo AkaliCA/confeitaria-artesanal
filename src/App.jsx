@@ -9,7 +9,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Estados completos de todos os módulos da confeitaria
+  // Estados completos de todos os módulos da Akali Confeitaria
   const [insumos, setInsumos] = useState([
     { id: 1, nome: 'Leite Moça (Nestlé)', estoque: 18, unidade: 'un', custo: 8.50, min: 5 },
     { id: 2, nome: 'Chocolate Belga 50%', estoque: 3.5, unidade: 'kg', custo: 65.00, min: 2 }
@@ -27,8 +27,16 @@ export default function App() {
     { id: 1, produto: 'Brigadeiro Gourmet', lote: 'LOT-001', validade: '2026-10-15', qtd: 50 }
   ]);
 
+  const [receitas, setReceitas] = useState([
+    { id: 1, nome: 'Massa de Brigadeiro Gourmet', rendimento: '50 unidades', custoEstimado: 25.00 }
+  ]);
+
   const [produtos, setProdutos] = useState([
     { id: 1, nome: 'Bolo no Pote de Ninho', preco: 15.00, categoria: 'Bolos no Pote' }
+  ]);
+
+  const [producao, setProducao] = useState([
+    { id: 1, item: 'Bolo no Pote de Ninho', qtd: 20, status: 'Em Produção' }
   ]);
 
   const [clientes, setClientes] = useState([
@@ -48,7 +56,9 @@ export default function App() {
   const [novoFornecedor, setNovoFornecedor] = useState({ nome: '', contato: '', categoria: '' });
   const [novaCompra, setNovaCompra] = useState({ item: '', fornecedor: '', valor: '' });
   const [novoLote, setNovoLote] = useState({ produto: '', lote: '', validade: '', qtd: '' });
+  const [novaReceita, setNovaReceita] = useState({ nome: '', rendimento: '', custoEstimado: '' });
   const [novoProduto, setNovoProduto] = useState({ nome: '', preco: '', categoria: 'Bolos no Pote' });
+  const [novaProducao, setNovaProducao] = useState({ item: '', qtd: '' });
   const [novoCliente, setNovoCliente] = useState({ nome: '', telefone: '', cidade: 'Itapevi/SP' });
   const [novaVenda, setNovaVenda] = useState({ cliente: '', item: '', total: '' });
   const [novaDespesa, setNovaDespesa] = useState({ descricao: '', valor: '', categoria: 'Fixas' });
@@ -58,7 +68,9 @@ export default function App() {
   const adicionarFornecedor = (e) => { e.preventDefault(); if (!novoFornecedor.nome) return; setFornecedores([...fornecedores, { id: Date.now(), ...novoFornecedor }]); setNovoFornecedor({ nome: '', contato: '', categoria: '' }); };
   const adicionarCompra = (e) => { e.preventDefault(); if (!novaCompra.item) return; setCompras([...compras, { id: Date.now(), ...novaCompra, valor: Number(novaCompra.valor), data: 'Hoje' }]); setNovaCompra({ item: '', fornecedor: '', valor: '' }); };
   const adicionarLote = (e) => { e.preventDefault(); if (!novoLote.produto) return; setLotes([...lotes, { id: Date.now(), ...novoLote, qtd: Number(novoLote.qtd) }]); setNovoLote({ produto: '', lote: '', validade: '', qtd: '' }); };
+  const adicionarReceita = (e) => { e.preventDefault(); if (!novaReceita.nome) return; setReceitas([...receitas, { id: Date.now(), ...novaReceita, custoEstimado: Number(novaReceita.custoEstimado) }]); setNovaReceita({ nome: '', rendimento: '', custoEstimado: '' }); };
   const adicionarProduto = (e) => { e.preventDefault(); if (!novoProduto.nome) return; setProdutos([...produtos, { id: Date.now(), ...novoProduto, preco: Number(novoProduto.preco) }]); setNovoProduto({ nome: '', preco: '', categoria: 'Bolos no Pote' }); };
+  const adicionarProducao = (e) => { e.preventDefault(); if (!novaProducao.item) return; setProducao([...producao, { id: Date.now(), ...novaProducao, qtd: Number(novaProducao.qtd), status: 'Em Produção' }]); setNovaProducao({ item: '', qtd: '' }); };
   const adicionarCliente = (e) => { e.preventDefault(); if (!novoCliente.nome) return; setClientes([...clientes, { id: Date.now(), ...novoCliente }]); setNovoCliente({ nome: '', telefone: '', cidade: 'Itapevi/SP' }); };
   const adicionarVenda = (e) => { e.preventDefault(); if (!novaVenda.item) return; setVendas([...vendas, { id: Date.now(), ...novaVenda, total: Number(novaVenda.total), data: 'Hoje' }]); setNovaVenda({ cliente: '', item: '', total: '' }); };
   const adicionarDespesa = (e) => { e.preventDefault(); if (!novaDespesa.descricao) return; setDespesas([...despesas, { id: Date.now(), ...novaDespesa, valor: Number(novaDespesa.valor) }]); setNovaDespesa({ descricao: '', valor: '', categoria: 'Fixas' }); };
@@ -69,10 +81,14 @@ export default function App() {
     { id: 'fornecedores', label: '3. Fornecedores', icon: Truck },
     { id: 'compras', label: '4. Compras', icon: ShoppingCart },
     { id: 'lotes', label: '5. Lotes (PVPS/FEFO)', icon: Layers },
+    { id: 'receitas', label: '9. Receitas', icon: BookOpen },
     { id: 'produtos', label: '10. Produtos', icon: Sparkles },
+    { id: 'producao', label: '12. Produção', icon: ChefHat },
     { id: 'clientes', label: '14. Clientes', icon: Users },
     { id: 'vendas', label: '15. Vendas', icon: DollarSign },
+    { id: 'custos', label: '17. Custos & Precificação', icon: Calculator },
     { id: 'despesas', label: '19. Despesas', icon: FileText },
+    { id: 'relatorios', label: '21. Relatórios', icon: BarChart3 },
   ];
 
   return (
@@ -111,7 +127,7 @@ export default function App() {
         </div>
       </header>
 
-      {/* Menu Lateral com todas as opções */}
+      {/* Menu Lateral com todos os módulos */}
       {menuOpen && (
         <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-xs flex" onClick={() => setMenuOpen(false)}>
           <div className="w-80 bg-[#FDFBF7] h-full shadow-2xl overflow-y-auto p-4 flex flex-col border-r border-stone-200" onClick={(e) => e.stopPropagation()}>
@@ -151,20 +167,20 @@ export default function App() {
                 Painel Geral Ativo
               </span>
               <h2 className="text-xl font-bold mt-3 text-amber-100">Akali Confeitaria Artesanal</h2>
-              <p className="text-xs text-amber-200/80 mt-1">Controlo completo de stock, validades PVPS, produção, vendas e despesas.</p>
+              <p className="text-xs text-amber-200/80 mt-1">Controlo completo de stock, validades PVPS, receitas, produção e vendas.</p>
               
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5">
                 <button onClick={() => setActiveTab('insumos')} className="bg-amber-600 hover:bg-amber-700 text-white text-xs py-2.5 px-3 rounded-xl font-semibold shadow">Insumos</button>
-                <button onClick={() => setActiveTab('lotes')} className="bg-stone-800 text-amber-100 text-xs py-2.5 px-3 rounded-xl font-semibold border border-amber-900/50">Lotes (PVPS)</button>
-                <button onClick={() => setActiveTab('produtos')} className="bg-stone-800 text-amber-100 text-xs py-2.5 px-3 rounded-xl font-semibold border border-amber-900/50">Produtos</button>
+                <button onClick={() => setActiveTab('receitas')} className="bg-stone-800 text-amber-100 text-xs py-2.5 px-3 rounded-xl font-semibold border border-amber-900/50">Receitas</button>
+                <button onClick={() => setActiveTab('producao')} className="bg-stone-800 text-amber-100 text-xs py-2.5 px-3 rounded-xl font-semibold border border-amber-900/50">Produção</button>
                 <button onClick={() => setActiveTab('vendas')} className="bg-stone-800 text-amber-100 text-xs py-2.5 px-3 rounded-xl font-semibold border border-amber-900/50">Vendas</button>
               </div>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div className="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm"><p className="text-[11px] font-bold text-stone-400 uppercase">Insumos</p><p className="text-xl font-bold text-stone-900 mt-1">{insumos.length} Itens</p></div>
-              <div className="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm"><p className="text-[11px] font-bold text-stone-400 uppercase">Lotes Ativos</p><p className="text-xl font-bold text-stone-900 mt-1">{lotes.length} Registros</p></div>
-              <div className="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm"><p className="text-[11px] font-bold text-stone-400 uppercase">Produtos</p><p className="text-xl font-bold text-stone-900 mt-1">{produtos.length} Itens</p></div>
+              <div className="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm"><p className="text-[11px] font-bold text-stone-400 uppercase">Receitas</p><p className="text-xl font-bold text-stone-900 mt-1">{receitas.length} Cadastradas</p></div>
+              <div className="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm"><p className="text-[11px] font-bold text-stone-400 uppercase">Produção</p><p className="text-xl font-bold text-stone-900 mt-1">{producao.length} Lotes</p></div>
               <div className="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm"><p className="text-[11px] font-bold text-stone-400 uppercase">Vendas</p><p className="text-xl font-bold text-stone-900 mt-1">{vendas.length} Pedidos</p></div>
             </div>
           </div>
@@ -247,20 +263,57 @@ export default function App() {
           </div>
         )}
 
+        {/* RECEITAS */}
+        {activeTab === 'receitas' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
+              <h2 className="text-base font-bold text-stone-900 mb-4">Cadastrar Receita</h2>
+              <form onSubmit={adicionarReceita} className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                <input type="text" placeholder="Nome da Receita" value={novaReceita.nome} onChange={e => setNovaReceita({...novaReceita, nome: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
+                <input type="text" placeholder="Rendimento (ex: 20 un)" value={novaReceita.rendimento} onChange={e => setNovaReceita({...novaReceita, rendimento: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
+                <input type="number" placeholder="Custo Estimado (R$)" value={novaReceita.custoEstimado} onChange={e => setNovaReceita({...novaReceita, custoEstimado: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
+                <button type="submit" className="bg-amber-700 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar Receita</button>
+              </form>
+            </div>
+            <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
+              <table className="w-full text-left text-sm"><thead className="bg-stone-50 border-b text-stone-500"><tr><th className="px-6 py-3">Receita</th><th className="px-6 py-3">Rendimento</th><th className="px-6 py-3">Custo Est.</th></tr></thead>
+              <tbody className="divide-y">{receitas.map(r => (<tr key={r.id}><td className="px-6 py-3 font-medium">{r.nome}</td><td className="px-6 py-3">{r.rendimento}</td><td className="px-6 py-3 text-amber-800">R$ {r.custoEstimado.toFixed(2)}</td></tr>))}</tbody></table>
+            </div>
+          </div>
+        )}
+
         {/* PRODUTOS */}
         {activeTab === 'produtos' && (
           <div className="space-y-6">
             <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
               <h2 className="text-base font-bold text-stone-900 mb-4">Cadastrar Produto</h2>
               <form onSubmit={adicionarProduto} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <input type="text" placeholder="Nome" value={novoProduto.nome} onChange={e => setNovoProduto({...novoProduto, nome: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
+                <input type="text" placeholder="Nome do Produto" value={novoProduto.nome} onChange={e => setNovoProduto({...novoProduto, nome: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
                 <input type="number" placeholder="Preço (R$)" value={novoProduto.preco} onChange={e => setNovoProduto({...novoProduto, preco: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <button type="submit" className="bg-amber-700 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar</button>
+                <button type="submit" className="bg-amber-700 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar Produto</button>
               </form>
             </div>
             <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
               <table className="w-full text-left text-sm"><thead className="bg-stone-50 border-b text-stone-500"><tr><th className="px-6 py-3">Produto</th><th className="px-6 py-3">Categoria</th><th className="px-6 py-3">Preço</th></tr></thead>
               <tbody className="divide-y">{produtos.map(p => (<tr key={p.id}><td className="px-6 py-3 font-medium">{p.nome}</td><td className="px-6 py-3">{p.categoria}</td><td className="px-6 py-3 font-semibold text-amber-800">R$ {p.preco.toFixed(2)}</td></tr>))}</tbody></table>
+            </div>
+          </div>
+        )}
+
+        {/* PRODUÇÃO */}
+        {activeTab === 'producao' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
+              <h2 className="text-base font-bold text-stone-900 mb-4">Registar Produção</h2>
+              <form onSubmit={adicionarProducao} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <input type="text" placeholder="Item a Produzir" value={novaProducao.item} onChange={e => setNovaProducao({...novaProducao, item: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
+                <input type="number" placeholder="Quantidade" value={novaProducao.qtd} onChange={e => setNovaProducao({...novaProducao, qtd: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
+                <button type="submit" className="bg-amber-700 text-white rounded-xl text-sm font-semibold px-4 py-2">Registar Lote</button>
+              </form>
+            </div>
+            <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
+              <table className="w-full text-left text-sm"><thead className="bg-stone-50 border-b text-stone-500"><tr><th className="px-6 py-3">Item</th><th className="px-6 py-3">Quantidade</th><th className="px-6 py-3">Estado</th></tr></thead>
+              <tbody className="divide-y">{producao.map(pr => (<tr key={pr.id}><td className="px-6 py-3 font-medium">{pr.item}</td><td className="px-6 py-3">{pr.qtd} un</td><td className="px-6 py-3"><span className="bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full text-xs font-semibold">{pr.status}</span></td></tr>))}</tbody></table>
             </div>
           </div>
         )}
@@ -273,7 +326,7 @@ export default function App() {
               <form onSubmit={adicionarCliente} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <input type="text" placeholder="Nome" value={novoCliente.nome} onChange={e => setNovoCliente({...novoCliente, nome: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
                 <input type="text" placeholder="Telefone" value={novoCliente.telefone} onChange={e => setNovoCliente({...novoCliente, telefone: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <button type="submit" className="bg-amber-700 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar</button>
+                <button type="submit" className="bg-amber-700 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar Cliente</button>
               </form>
             </div>
             <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
@@ -302,6 +355,19 @@ export default function App() {
           </div>
         )}
 
+        {/* CUSTOS & PRECIFICAÇÃO */}
+        {activeTab === 'custos' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-4">
+              <h2 className="text-base font-bold text-stone-900">Módulo de Custos & Precificação</h2>
+              <p className="text-xs text-stone-500">Calcule o preço de venda ideal com base nos insumos e margem de lucro desejada.</p>
+              <div className="p-4 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-900">
+                Margem sugerida padrão: <strong>100% sobre o custo dos insumos</strong>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* DESPESAS */}
         {activeTab === 'despesas' && (
           <div className="space-y-6">
@@ -310,13 +376,23 @@ export default function App() {
               <form onSubmit={adicionarDespesa} className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                 <input type="text" placeholder="Descrição" value={novaDespesa.descricao} onChange={e => setNovaDespesa({...novaDespesa, descricao: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
                 <input type="number" placeholder="Valor (R$)" value={novaDespesa.valor} onChange={e => setNovaDespesa({...novaDespesa, valor: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
-                <input type="text" placeholder="Categoria (ex: Fixas)" value={novaDespesa.categoria} onChange={e => setNovaDespesa({...novaDespesa, categoria: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
+                <input type="text" placeholder="Categoria (ex: Fixas)" value={novaDespesa.categoria} onChange={e => setNovaDespesa({...novaDespdespesa, categoria: e.target.value})} className="px-3 py-2 border rounded-xl text-sm" />
                 <button type="submit" className="bg-amber-700 text-white rounded-xl text-sm font-semibold px-4 py-2">Salvar</button>
               </form>
             </div>
             <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
               <table className="w-full text-left text-sm"><thead className="bg-stone-50 border-b text-stone-500"><tr><th className="px-6 py-3">Descrição</th><th className="px-6 py-3">Categoria</th><th className="px-6 py-3">Valor</th></tr></thead>
               <tbody className="divide-y">{despesas.map(d => (<tr key={d.id}><td className="px-6 py-3 font-medium">{d.descricao}</td><td className="px-6 py-3">{d.categoria}</td><td className="px-6 py-3 text-rose-700 font-semibold">R$ {d.valor.toFixed(2)}</td></tr>))}</tbody></table>
+            </div>
+          </div>
+        )}
+
+        {/* RELATÓRIOS */}
+        {activeTab === 'relatorios' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-4">
+              <h2 className="text-base font-bold text-stone-900">Relatórios Financeiros e de Produção</h2>
+              <p className="text-xs text-stone-500">Consolidação automática do faturamento mensal, total de vendas e custos de produção.</p>
             </div>
           </div>
         )}
